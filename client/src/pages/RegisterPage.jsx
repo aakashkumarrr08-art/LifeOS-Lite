@@ -33,7 +33,7 @@ function RegisterPage() {
   }
 
   if (authReady && isAuthenticated) {
-    return <Navigate replace to="/profile" />;
+    return <Navigate replace to="/dashboard" />;
   }
 
   const validateForm = () => {
@@ -97,7 +97,7 @@ function RegisterPage() {
         email: formData.email.trim().toLowerCase(),
         password: formData.password,
       });
-      navigate('/profile', { replace: true });
+      navigate('/dashboard', { replace: true });
     } catch (error) {
       setSubmitError(getApiErrorMessage(error));
     } finally {

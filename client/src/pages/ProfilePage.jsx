@@ -1,5 +1,5 @@
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth.js';
 
 function ProfilePage() {
@@ -82,6 +82,9 @@ function ProfilePage() {
             <button className="primary-button w-full justify-center" disabled={isRefreshing} onClick={handleRefresh} type="button">
               {isRefreshing ? 'Refreshing...' : 'Refresh Profile'}
             </button>
+            <Link className="secondary-button w-full justify-center" to="/dashboard">
+              Back to Dashboard
+            </Link>
             <button className="secondary-button w-full justify-center border-white/15 bg-white/10 text-white hover:bg-white/15" onClick={handleLogout} type="button">
               Logout
             </button>
@@ -97,6 +100,7 @@ function ProfilePage() {
             <li>Passwords are hashed with bcrypt before storing in MongoDB.</li>
             <li>JWT tokens are attached automatically by the Axios request interceptor.</li>
             <li>The backend auth middleware protects this route using the Bearer token.</li>
+            <li>The dashboard uses its own protected `/api/dashboard` endpoint for demo statistics.</li>
           </ul>
         </div>
       </aside>

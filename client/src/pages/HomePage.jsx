@@ -3,16 +3,16 @@ import useAuth from '../hooks/useAuth.js';
 
 const authFeatures = [
   {
-    title: 'Register',
-    description: 'Create a student account with validated inputs and hashed passwords.',
+    title: 'Modern Dashboard',
+    description: 'A responsive student dashboard with cards, charts, progress insights, and dark mode.',
   },
   {
-    title: 'Login',
-    description: 'Authenticate securely and store the JWT token for future protected requests.',
+    title: 'Protected Access',
+    description: 'The dashboard remains behind JWT authentication and uses the existing secure session flow.',
   },
   {
-    title: 'Profile',
-    description: 'Access a protected page powered by token-based authorization middleware.',
+    title: 'Server Demo API',
+    description: 'Dashboard statistics now come from a real backend endpoint designed for the viva demo.',
   },
 ];
 
@@ -25,23 +25,24 @@ function HomePage() {
         <div className="grid gap-10 px-8 py-10 lg:grid-cols-[1.15fr_0.85fr] lg:px-10">
           <div className="space-y-6">
             <div className="inline-flex rounded-full border border-cyan-500/20 bg-cyan-500/10 px-4 py-1 text-sm font-medium text-cyan-700 dark:text-cyan-300">
-              Authentication Module
+              Phase 3 Dashboard
             </div>
             <div className="space-y-4">
               <h2 className="max-w-3xl text-4xl font-semibold tracking-tight text-slate-950 dark:text-white">
-                LifeOS Lite now includes a complete student authentication workflow.
+                LifeOS Lite now includes a beautiful modern productivity dashboard.
               </h2>
               <p className="max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-300">
-                This phase adds secure registration, login, JWT-based profile access, logout, and
-                responsive React pages without touching the dashboard or other modules.
+                This phase adds a professional dashboard UI, protected route navigation, a Chart.js
+                weekly study visualization, and a backend dashboard API while keeping all future
+                modules out of scope.
               </p>
             </div>
 
             <div className="flex flex-wrap gap-4">
               {isAuthenticated ? (
                 <>
-                  <Link className="primary-button" to="/profile">
-                    Open Profile
+                  <Link className="primary-button" to="/dashboard">
+                    Open Dashboard
                   </Link>
                   <span className="inline-flex items-center rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-sm font-medium text-emerald-600 dark:text-emerald-300">
                     Signed in as {user?.name}
@@ -70,14 +71,16 @@ function HomePage() {
                 <p className="mt-2">
                   {authReady
                     ? isAuthenticated
-                      ? 'Authenticated and ready for protected routes.'
+                      ? 'Authenticated and ready for the protected dashboard.'
                       : 'No user logged in yet.'
                     : 'Checking stored authentication token...'}
                 </p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                 <p className="font-semibold text-white">Backend API</p>
-                <p className="mt-2">Available endpoints: register, login, and protected profile.</p>
+                <p className="mt-2">
+                  Available endpoints: register, login, protected profile, and protected dashboard.
+                </p>
               </div>
             </div>
           </div>
@@ -102,4 +105,3 @@ function HomePage() {
 }
 
 export default HomePage;
-

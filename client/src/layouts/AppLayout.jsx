@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom';
+import ThemeToggleButton from '../components/ThemeToggleButton.jsx';
 import useAuth from '../hooks/useAuth.js';
 
 function AppLayout() {
@@ -24,7 +25,7 @@ function AppLayout() {
               <h1 className="text-2xl font-bold tracking-tight">LifeOS Lite</h1>
             </div>
             <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-300 lg:hidden">
-              Phase 2 Authentication
+              Phase 3 Dashboard
             </span>
           </div>
 
@@ -43,16 +44,22 @@ function AppLayout() {
                   </NavLink>
                 </>
               ) : (
-                <NavLink className={navigationLinkClass} to="/profile">
-                  Profile
-                </NavLink>
+                <>
+                  <NavLink className={navigationLinkClass} to="/dashboard">
+                    Dashboard
+                  </NavLink>
+                  <NavLink className={navigationLinkClass} to="/profile">
+                    Profile
+                  </NavLink>
+                </>
               )}
             </nav>
 
             <div className="flex flex-wrap items-center gap-3">
               <span className="hidden rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-300 lg:inline-flex">
-                Phase 2 Authentication
+                Phase 3 Dashboard
               </span>
+              <ThemeToggleButton />
               {authReady && isAuthenticated ? (
                 <>
                   <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-xs font-medium text-cyan-700 dark:text-cyan-300">

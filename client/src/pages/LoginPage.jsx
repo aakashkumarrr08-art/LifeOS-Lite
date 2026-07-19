@@ -32,7 +32,7 @@ function LoginPage() {
   }
 
   if (authReady && isAuthenticated) {
-    return <Navigate replace to="/profile" />;
+    return <Navigate replace to="/dashboard" />;
   }
 
   const validateForm = () => {
@@ -82,7 +82,7 @@ function LoginPage() {
         password: formData.password,
       });
 
-      const redirectTarget = location.state?.from?.pathname || '/profile';
+      const redirectTarget = location.state?.from?.pathname || '/dashboard';
       navigate(redirectTarget, { replace: true });
     } catch (error) {
       setSubmitError(getApiErrorMessage(error));
@@ -94,7 +94,7 @@ function LoginPage() {
   return (
     <AuthPageShell
       badge="Secure Login"
-      description="Sign in to access your protected student profile and prepare the app for later dashboard modules."
+      description="Sign in to access your protected student dashboard and track your study metrics in one place."
       footerLabel="Need an account?"
       footerLinkText="Create one here"
       footerTo="/register"
@@ -106,7 +106,7 @@ function LoginPage() {
             Sign In
           </h1>
           <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
-            Use your email and password to continue to the protected profile page.
+            Use your email and password to continue to the protected dashboard.
           </p>
         </div>
 

@@ -1,196 +1,273 @@
-# LifeOS Lite
+<div align="center">
 
-LifeOS Lite is a full stack student productivity dashboard built for a university semester examination. This Phase 1 setup creates the complete project foundation without implementing any business features yet.
+# 🚀 LifeOS Lite
 
-## Phase 1 Scope
+### A Modern Full-Stack Student Productivity Dashboard
 
-- Complete frontend and backend folder structure
-- Express server configuration
-- MongoDB Atlas connection setup
-- React + Vite setup
-- Tailwind CSS configuration
-- React Router configuration
-- Environment template, `.gitignore`, and project documentation
+Built using the **MERN Stack** with secure authentication and a responsive dashboard.
 
-## Tech Stack
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
+![Node.js](https://img.shields.io/badge/Node.js-22-339933?logo=node.js)
+![Express.js](https://img.shields.io/badge/Express.js-000000?logo=express)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb)
+![JWT](https://img.shields.io/badge/JWT-Authentication-orange)
+![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-4-06B6D4?logo=tailwindcss)
+
+</div>
+
+---
+
+# 📖 About
+
+LifeOS Lite is a modern **Student Productivity Dashboard** built using the **MERN Stack**.
+
+The goal of this project is to help students manage their academic life through a clean, secure, and user-friendly web application.
+
+The project is being developed phase by phase, following real-world software development practices.
+
+---
+
+# ✨ Features
+
+## ✅ Phase 1 – Project Setup
+
+- MERN Project Structure
+- MVC Backend Architecture
+- Tailwind CSS Setup
+- API Routing
+- Environment Configuration
+
+---
+
+## ✅ Phase 2 – Authentication
+
+- User Registration
+- User Login
+- JWT Authentication
+- Password Hashing (bcrypt)
+- Protected Routes
+- User Profile API
+
+---
+
+## ✅ Phase 3 – Dashboard
+
+- Responsive Dashboard
+- Sidebar Navigation
+- Dashboard Cards
+- Weekly Study Chart
+- Dark / Light Theme
+- Protected Dashboard API
+
+---
+
+# 🛠 Tech Stack
 
 ### Frontend
 
-- React.js with Vite
+- React
+- Vite
 - Tailwind CSS
-- React Router DOM
-- Axios
-- Chart.js
+- React Router
 
 ### Backend
 
 - Node.js
 - Express.js
-- MongoDB Atlas
+
+### Database
+
+- MongoDB
 - Mongoose
+
+### Authentication
+
 - JWT
 - bcrypt
 
-## Folder Structure
+---
+
+# 📂 Folder Structure
 
 ```text
-LifeOS-Lite/
+LifeOS-Lite
+│
+├── client
+│   ├── src
+│   ├── public
+│   └── package.json
+│
+├── server
+│   ├── config
+│   ├── controllers
+│   ├── middleware
+│   ├── models
+│   ├── routes
+│   └── package.json
+│
 ├── .env.example
-├── .gitignore
 ├── README.md
-├── client/
-│   ├── index.html
-│   ├── package.json
-│   ├── postcss.config.js
-│   ├── tailwind.config.js
-│   ├── vite.config.js
-│   └── src/
-│       ├── App.jsx
-│       ├── assets/
-│       ├── components/
-│       ├── context/
-│       ├── hooks/
-│       ├── index.css
-│       ├── layouts/
-│       │   └── AppLayout.jsx
-│       ├── main.jsx
-│       ├── pages/
-│       │   └── SetupPage.jsx
-│       └── services/
-└── server/
-    ├── app.js
-    ├── config/
-    │   └── db.js
-    ├── controllers/
-    │   └── healthController.js
-    ├── middleware/
-    │   └── errorMiddleware.js
-    ├── models/
-    ├── package.json
-    ├── routes/
-    │   ├── healthRoutes.js
-    │   └── index.js
-    ├── server.js
-    └── utils/
+└── .gitignore
 ```
 
-## Installation Commands
+---
 
-Run each command exactly as shown from the project root:
+# ⚙️ Installation
+
+### Clone the Repository
 
 ```bash
-mkdir -p client/src/assets client/src/components client/src/context client/src/hooks client/src/layouts client/src/pages client/src/services server/config server/controllers server/middleware server/models server/routes server/utils
-cd server
-npm install express mongoose cors dotenv morgan jsonwebtoken bcrypt
-npm install -D nodemon
-cd ../client
-npm install react react-dom react-router-dom axios chart.js
-npm install -D vite @vitejs/plugin-react tailwindcss@3 postcss autoprefixer
-cd ..
+git clone https://github.com/aakashkumarrr08-art/LifeOS-Lite.git
 ```
 
-## Environment Setup
-
-Create a backend environment file before running the server:
+### Move into the Project
 
 ```bash
-cp .env.example server/.env
+cd LifeOS-Lite
 ```
 
-Then update `server/.env` with your real MongoDB Atlas connection string and a strong JWT secret.
+### Install Frontend
 
-## How To Run The Project
+```bash
+cd client
+npm install
+```
 
-Use two terminals.
+### Install Backend
 
-### Terminal 1
+```bash
+cd ../server
+npm install
+```
+
+### Create Environment File
+
+Create a file:
+
+```text
+server/.env
+```
+
+Example:
+
+```env
+PORT=5000
+
+MONGO_URI=your_mongodb_connection_string
+
+JWT_SECRET=your_secret_key
+
+JWT_EXPIRES_IN=7d
+```
+
+### Start Backend
 
 ```bash
 cd server
 npm run dev
 ```
 
-### Terminal 2
+### Start Frontend
 
 ```bash
 cd client
 npm run dev
 ```
 
-After both servers start:
+---
 
-- Frontend: `http://localhost:5173`
-- Backend root: `http://localhost:5000`
-- Backend health route: `http://localhost:5000/api/health`
+# 📸 Screenshots
 
-## Common Setup Errors And Fixes
+## 🏠 Home Page
 
-### 1. `MONGO_URI is not set`
+> Add Screenshot Here
 
-Cause: `server/.env` was not created or not updated.
+---
 
-Fix:
+## 🔐 Login Page
 
-```bash
-cp .env.example server/.env
-```
+> Add Screenshot Here
 
-Then replace the example `MONGO_URI` value with your real MongoDB Atlas URI.
+---
 
-### 2. `EADDRINUSE: address already in use`
+## 📝 Register Page
 
-Cause: Port `5000` or `5173` is already being used by another process.
+> Add Screenshot Here
 
-Fix:
+---
 
-- Stop the running process using that port.
-- Or change `PORT` inside `server/.env`.
-- Or change the Vite port inside `client/vite.config.js`.
+## 📊 Dashboard
 
-### 3. Tailwind styles are not visible
+> Add Screenshot Here
 
-Cause: Dependencies were not installed correctly or the dev server was not restarted after setup.
+---
 
-Fix:
+# 📌 API Endpoints
 
-```bash
-cd client
-npm install
-npm run dev
-```
+## Authentication
 
-### 4. CORS error in the browser
+| Method | Endpoint |
+|--------|----------|
+| POST | /api/auth/register |
+| POST | /api/auth/login |
+| GET | /api/auth/profile |
 
-Cause: The frontend URL does not match `CLIENT_URL` in `server/.env`.
+---
 
-Fix:
+## Dashboard
 
-- Set `CLIENT_URL=http://localhost:5173` in `server/.env`.
-- Restart the backend server.
+| Method | Endpoint |
+|--------|----------|
+| GET | /api/dashboard |
 
-### 5. `Cannot find package` or `Cannot find module`
+---
 
-Cause: `node_modules` is missing or dependencies were interrupted during installation.
+# 🚧 Project Roadmap
 
-Fix:
+| Phase | Status |
+|--------|--------|
+| Project Setup | ✅ Completed |
+| Authentication | ✅ Completed |
+| Dashboard | ✅ Completed |
+| Study Planner | 🚧 In Progress |
+| Task Manager | ⏳ Planned |
+| Attendance Tracker | ⏳ Planned |
+| Notes Module | ⏳ Planned |
+| AI Study Assistant | ⏳ Planned |
+| Deployment | ⏳ Planned |
 
-```bash
-cd server
-npm install
-cd ../client
-npm install
-```
+---
 
-## Current Status
+# 🎯 Future Features
 
-Phase 1 is limited to setup only.
+- 📅 Study Planner
+- ✅ Task Manager (CRUD)
+- 📚 Notes Management
+- 📊 Attendance Tracker
+- 🤖 AI Study Assistant
+- 📆 Calendar Integration
+- 🔔 Notifications
+- 📈 Analytics Dashboard
+- 👤 User Profile
 
-Not included yet:
+---
 
-- Authentication
-- Dashboard data
-- Task management
-- Study planner logic
-- Attendance tracking
-- AI assistant
-- Analytics
+# 👨‍💻 Author
+
+**Aakash Kumar**
+
+B.Tech CSE Student
+
+GitHub: https://github.com/aakashkumarrr08-art
+
+---
+
+# ⭐ Support
+
+If you found this project helpful, please consider giving it a **Star ⭐** on GitHub.
+
+---
+
+# 📜 License
+
+This project is developed for educational and learning purposes.

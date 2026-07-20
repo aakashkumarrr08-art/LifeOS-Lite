@@ -12,6 +12,7 @@ const ProfilePage = lazy(() => import('./pages/ProfilePage.jsx'));
 const TaskPage = lazy(() => import('./pages/TaskPage.jsx'));
 const AttendancePage = lazy(() => import('./pages/AttendancePage.jsx'));
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage.jsx'));
+const StudyPlannerPage = lazy(() => import('./pages/StudyPlannerPage.jsx'));
 
 function RouteFallback() {
   return (
@@ -42,6 +43,7 @@ function App() {
           <Route path="tasks" element={<TaskPage />} />
           <Route path="attendance" element={<AttendancePage />} />
           <Route path="analytics" element={<AnalyticsPage />} />
+          <Route path="study-planner" element={<StudyPlannerPage />} />
           <Route path="profile" element={<ProfilePage />} />
           </Route>
         </Route>

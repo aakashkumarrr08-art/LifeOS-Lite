@@ -24,6 +24,19 @@ const formatTaskDueDate = (dueDate) =>
     dateStyle: 'medium',
   }).format(new Date(dueDate));
 
+const formatStudyDuration = (duration) => {
+  const totalMinutes = Number(duration) || 0;
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return hours > 0 ? (minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`) : `${minutes}m`;
+};
+
+const formatStudySessionDate = (date) =>
+  new Intl.DateTimeFormat('en-IN', {
+    day: 'numeric',
+    month: 'short',
+  }).format(new Date(date));
+
 const getApiErrorMessage = (error) =>
   error.response?.data?.message || 'Unable to load dashboard data right now.';
 
@@ -91,7 +104,7 @@ function DashboardPage() {
     );
   }
 
-  const { attendance, productivityScore, stats, studyProgress, todayTasks, upcomingExam, weeklyStudyHours } =
+  const { attendance, productivityScore, stats, studyPlanner, studyProgress, todayTasks, upcomingExam, weeklyStudyHours } =
     dashboardData;
   const joinedOn = user?.createdAt
     ? new Intl.DateTimeFormat('en-IN', {
@@ -216,6 +229,64 @@ function DashboardPage() {
         <div className="dashboard-panel">
           <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Classes Needed</p>
           <p className="mt-4 text-4xl font-semibold tracking-tight text-cyan-600 dark:text-cyan-300">{attendance.classesNeeded}</p>
+        </div>
+      </div>
+
+      <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+        <div className="dashboard-panel">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">Today&apos;s Study Sessions</p>
+              <h3 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">Your focused study blocks</h3>
+            </div>
+            <Link className="secondary-button px-4 py-2" to="/study-planner">Open Planner</Link>
+          </div>
+          <div className="mt-6 space-y-3">
+            {studyPlanner.todaySessions.length > 0 ? studyPlanner.todaySessions.map((session) => (
+              <div className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200/70 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950/60" key={session.id}>
+                <div className="min-w-0">
+                  <p className="truncate font-semibold text-slate-950 dark:text-white">{session.topic}</p>
+                  <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{session.subject} · {session.startTime} - {session.endTime}</p>
+                </div>
+                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${session.status === 'Completed' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-300' : 'bg-cyan-500/10 text-cyan-700 dark:text-cyan-300'}`}>
+                  {session.status}
+                </span>
+              </div>
+            )) : (
+              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-sm leading-6 text-slate-600 dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-300">
+                No study sessions are planned for today. Add one from the Study Planner.
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="dashboard-panel">
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">Study Planner Snapshot</p>
+          <h3 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">Keep the revision rhythm visible</h3>
+          <div className="mt-6 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4">
+            <p className="text-sm font-medium text-cyan-800 dark:text-cyan-200">Upcoming Session</p>
+            {studyPlanner.upcomingSession ? (
+              <div className="mt-2">
+                <p className="font-semibold text-slate-950 dark:text-white">{studyPlanner.upcomingSession.topic}</p>
+                <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                  {studyPlanner.upcomingSession.subject} · {formatStudySessionDate(studyPlanner.upcomingSession.date)} at {studyPlanner.upcomingSession.startTime}
+                </p>
+              </div>
+            ) : <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">No upcoming session scheduled.</p>}
+          </div>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <div>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Weekly Study Hours</p>
+              <p className="mt-1 text-2xl font-semibold text-cyan-700 dark:text-cyan-300">{studyPlanner.weeklyHours}h</p>
+            </div>
+            <div>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Completed Sessions</p>
+              <p className="mt-1 text-2xl font-semibold text-emerald-600 dark:text-emerald-300">{studyPlanner.completedSessions}</p>
+            </div>
+          </div>
+          {studyPlanner.upcomingSession ? (
+            <p className="mt-5 text-sm text-slate-600 dark:text-slate-300">Next block: {formatStudyDuration(studyPlanner.upcomingSession.duration)} of focused study.</p>
+          ) : null}
         </div>
       </div>
 
@@ -425,6 +496,9 @@ function DashboardPage() {
               </Link>
               <Link className="secondary-button w-full justify-center" to="/tasks">
                 Open Task Manager
+              </Link>
+              <Link className="secondary-button w-full justify-center" to="/study-planner">
+                Open Study Planner
               </Link>
               <Link className="secondary-button w-full justify-center" to="/attendance">
                 Open Attendance

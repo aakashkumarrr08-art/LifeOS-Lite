@@ -4,6 +4,7 @@ import analyticsRoutes from './analyticsRoutes.js';
 import authRoutes from './authRoutes.js';
 import dashboardRoutes from './dashboardRoutes.js';
 import healthRoutes from './healthRoutes.js';
+import studySessionRoutes from './studySessionRoutes.js';
 import taskRoutes from './taskRoutes.js';
 
 const router = Router();
@@ -14,5 +15,6 @@ router.use('/dashboard', dashboardRoutes);
 router.use('/tasks', taskRoutes);
 router.use('/attendance', attendanceRoutes);
 router.use('/analytics', analyticsRoutes);
+router.use('/study-sessions', studySessionRoutes);
 
 export default router;

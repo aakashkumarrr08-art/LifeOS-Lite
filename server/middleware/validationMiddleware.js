@@ -1,8 +1,10 @@
 import createHttpError from '../utils/createHttpError.js';
+import { calculateStudyDuration, isValidStudyTime } from '../utils/studySessionUtils.js';
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const taskPriorities = ['Low', 'Medium', 'High'];
 const taskStatuses = ['Pending', 'In Progress', 'Completed'];
+const studySessionStatuses = ['Pending', 'Completed'];
 
 const isWholeNumber = (value) => typeof value === 'number' && Number.isSafeInteger(value);
 
@@ -238,6 +240,111 @@ const validateAttendanceUpdateInput = (req, _res, next) => {
   next();
 };
 
+const validateStudySessionFields = (studySession, errors, isUpdate = false) => {
+  const { subject, topic, date, startTime, endTime, priority, status, notes } = studySession;
+
+  if (!isUpdate || subject !== undefined) {
+    if (typeof subject !== 'string' || !subject.trim()) {
+      errors.push({ field: 'subject', message: 'Subject is required.' });
+    } else if (subject.trim().length > 80) {
+      errors.push({ field: 'subject', message: 'Subject must not exceed 80 characters.' });
+    } else {
+      studySession.subject = subject.trim();
+    }
+  }
+
+  if (!isUpdate || topic !== undefined) {
+    if (typeof topic !== 'string' || !topic.trim()) {
+      errors.push({ field: 'topic', message: 'Topic is required.' });
+    } else if (topic.trim().length > 120) {
+      errors.push({ field: 'topic', message: 'Topic must not exceed 120 characters.' });
+    } else {
+      studySession.topic = topic.trim();
+    }
+  }
+
+  if (!isUpdate || date !== undefined) {
+    if (typeof date !== 'string' || !date || Number.isNaN(new Date(date).getTime())) {
+      errors.push({ field: 'date', message: 'A valid study date is required.' });
+    } else {
+      studySession.date = new Date(date).toISOString();
+    }
+  }
+
+  if (!isUpdate || startTime !== undefined) {
+    if (!isValidStudyTime(startTime)) {
+      errors.push({ field: 'startTime', message: 'Start time must use the HH:mm format.' });
+    }
+  }
+
+  if (!isUpdate || endTime !== undefined) {
+    if (!isValidStudyTime(endTime)) {
+      errors.push({ field: 'endTime', message: 'End time must use the HH:mm format.' });
+    }
+  }
+
+  if (priority !== undefined && !taskPriorities.includes(priority)) {
+    errors.push({ field: 'priority', message: 'Priority must be Low, Medium, or High.' });
+  }
+
+  if (status !== undefined && !studySessionStatuses.includes(status)) {
+    errors.push({ field: 'status', message: 'Status must be Pending or Completed.' });
+  }
+
+  if (!isUpdate || notes !== undefined) {
+    if (notes !== undefined && (typeof notes !== 'string' || notes.trim().length > 500)) {
+      errors.push({ field: 'notes', message: 'Notes must not exceed 500 characters.' });
+    } else {
+      studySession.notes = notes?.trim() || '';
+    }
+  }
+
+  if (
+    startTime !== undefined &&
+    endTime !== undefined &&
+    isValidStudyTime(startTime) &&
+    isValidStudyTime(endTime)
+  ) {
+    const duration = calculateStudyDuration(startTime, endTime);
+
+    if (!duration) {
+      errors.push({ field: 'endTime', message: 'End time must be later than start time.' });
+    } else {
+      studySession.duration = duration;
+    }
+  }
+};
+
+const validateStudySessionCreateInput = (req, _res, next) => {
+  const errors = [];
+
+  validateStudySessionFields(req.body, errors);
+
+  if (errors.length > 0) {
+    return next(createHttpError(400, 'Please correct the study session fields.', errors));
+  }
+
+  next();
+};
+
+const validateStudySessionUpdateInput = (req, _res, next) => {
+  const allowedFields = ['subject', 'topic', 'date', 'startTime', 'endTime', 'priority', 'status', 'notes'];
+  const suppliedFields = allowedFields.filter((field) => req.body[field] !== undefined);
+  const errors = [];
+
+  if (suppliedFields.length === 0) {
+    errors.push({ field: 'studySession', message: 'Provide at least one study session field to update.' });
+  }
+
+  validateStudySessionFields(req.body, errors, true);
+
+  if (errors.length > 0) {
+    return next(createHttpError(400, 'Please correct the study session fields.', errors));
+  }
+
+  next();
+};
+
 export {
   validateRegisterInput,
   validateLoginInput,
@@ -245,4 +352,6 @@ export {
   validateTaskUpdateInput,
   validateAttendanceCreateInput,
   validateAttendanceUpdateInput,
+  validateStudySessionCreateInput,
+  validateStudySessionUpdateInput,
 };

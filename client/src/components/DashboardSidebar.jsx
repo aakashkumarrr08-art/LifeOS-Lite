@@ -3,13 +3,14 @@ import useAuth from '../hooks/useAuth.js';
 
 const navigationItems = [
   { label: 'Dashboard', description: 'Overview and insights', to: '/dashboard' },
+  { label: 'Study Planner', description: 'Schedule focused study sessions', to: '/study-planner' },
   { label: 'Task Manager', description: 'Plan and complete tasks', to: '/tasks' },
   { label: 'Attendance', description: 'Track subject eligibility', to: '/attendance' },
   { label: 'Analytics', description: 'Review progress and trends', to: '/analytics' },
   { label: 'Profile', description: 'Student account details', to: '/profile' },
 ];
 
-const upcomingItems = ['Study Planner'];
+const upcomingItems = ['AI Assistant'];
 
 function DashboardSidebar({ isOpen, onClose }) {
   const { logout, user } = useAuth();

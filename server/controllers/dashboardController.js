@@ -1,4 +1,5 @@
 import Attendance from '../models/Attendance.js';
+import StudySession from '../models/StudySession.js';
 import Task from '../models/Task.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import {
@@ -22,8 +23,26 @@ const getDashboardData = asyncHandler(async (req, res) => {
     0,
   );
   const taskQuery = { userId: req.user._id };
+  const startOfWeek = new Date(startOfToday);
+  const dayOfWeek = startOfWeek.getDay();
+  const daysSinceMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  startOfWeek.setDate(startOfWeek.getDate() - daysSinceMonday);
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(endOfWeek.getDate() + 7);
+  const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-  const [totalTasks, completedTasks, pendingTasks, upcomingDeadlines, todayTasks, attendanceRecords] = await Promise.all([
+  const [
+    totalTasks,
+    completedTasks,
+    pendingTasks,
+    upcomingDeadlines,
+    todayTasks,
+    attendanceRecords,
+    todayStudySessions,
+    upcomingStudySessions,
+    weeklyStudySessions,
+    completedStudySessions,
+  ] = await Promise.all([
     Task.countDocuments(taskQuery),
     Task.countDocuments({ ...taskQuery, status: 'Completed' }),
     Task.countDocuments({ ...taskQuery, status: 'Pending' }),
@@ -39,6 +58,14 @@ const getDashboardData = asyncHandler(async (req, res) => {
       .sort({ dueDate: 1, createdAt: -1 })
       .limit(4),
     Attendance.find(taskQuery).sort({ subject: 1, createdAt: -1 }),
+    StudySession.find({ ...taskQuery, date: { $gte: startOfToday, $lt: endOfToday } })
+      .sort({ startTime: 1 })
+      .limit(4),
+    StudySession.find({ ...taskQuery, date: { $gte: startOfToday } })
+      .sort({ date: 1, startTime: 1 })
+      .limit(10),
+    StudySession.find({ ...taskQuery, date: { $gte: startOfWeek, $lt: endOfWeek } }),
+    StudySession.countDocuments({ ...taskQuery, status: 'Completed' }),
   ]);
   const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
   const attendanceWithMetrics = attendanceRecords.map(formatAttendanceRecord);
@@ -56,6 +83,17 @@ const getDashboardData = asyncHandler(async (req, res) => {
   const classesNeeded = atRiskRecords.reduce(
     (total, record) => total + (record.classesNeeded || 0),
     0,
+  );
+  const upcomingStudySession = upcomingStudySessions.find((session) => {
+    const sessionDate = new Date(session.date);
+    return sessionDate > startOfToday || session.startTime >= currentTime;
+  });
+  const weeklyStudyHours = Number(
+    (
+      weeklyStudySessions
+        .filter((session) => session.status === 'Completed')
+        .reduce((total, session) => total + session.duration, 0) / 60
+    ).toFixed(1),
   );
 
   res.status(200).json({
@@ -111,6 +149,31 @@ const getDashboardData = asyncHandler(async (req, res) => {
         completedHours: 17.5,
         focusSessions: 9,
         currentStreak: 6,
+      },
+      studyPlanner: {
+        todaySessions: todayStudySessions.map((session) => ({
+          id: session.id,
+          subject: session.subject,
+          topic: session.topic,
+          startTime: session.startTime,
+          endTime: session.endTime,
+          duration: session.duration,
+          priority: session.priority,
+          status: session.status,
+        })),
+        upcomingSession: upcomingStudySession
+          ? {
+              id: upcomingStudySession.id,
+              subject: upcomingStudySession.subject,
+              topic: upcomingStudySession.topic,
+              date: upcomingStudySession.date,
+              startTime: upcomingStudySession.startTime,
+              duration: upcomingStudySession.duration,
+              priority: upcomingStudySession.priority,
+            }
+          : null,
+        weeklyHours: weeklyStudyHours,
+        completedSessions: completedStudySessions,
       },
       attendance: {
         hasRecords: attendanceWithMetrics.length > 0,

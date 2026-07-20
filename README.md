@@ -1,107 +1,360 @@
-# LifeOS Lite
+<h1 align="center">🚀 LifeOS Lite</h1>
+<p align="center">
+A Modern MERN Stack Student Productivity Management System
+</p>
 
-LifeOS Lite is a full-stack student productivity dashboard built with React, Express, MongoDB, and Mongoose. It provides authenticated task management, attendance tracking, study planning, analytics, and a transparent rule-based study assistant.
+<p align="center">
 
-## Features
+![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
+![Node.js](https://img.shields.io/badge/Node.js-22-339933?style=for-the-badge&logo=node.js)
+![Express.js](https://img.shields.io/badge/Express.js-Backend-000000?style=for-the-badge&logo=express)
+![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb)
+![JWT](https://img.shields.io/badge/Auth-JWT-orange?style=for-the-badge)
+![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-38BDF8?style=for-the-badge&logo=tailwindcss)
+![Google Gemini](https://img.shields.io/badge/AI-Google_Gemini-4285F4?style=for-the-badge&logo=google)
 
-- JWT authentication with bcrypt password hashing and protected routes
-- Dashboard with live task, attendance, study, productivity, and AI insight data
-- User-scoped CRUD modules for tasks, attendance records, and study sessions
-- Analytics for weekly and monthly task progress, attendance trends, and productivity
-- Rule-based AI Study Assistant built from the authenticated user's own data
-- Responsive light and dark interface with keyboard-accessible dialogs and Chart.js charts
+</p>
 
-## Project Structure
+<p align="center">
+<b>A Modern MERN Stack Student Productivity Management System</b><br><br>
+Manage your <b>Tasks</b>, <b>Study Plans</b>, <b>Attendance</b>, <b>Analytics</b>, and <b>AI-powered Assistance</b> — all in one place.
+</p>
+
+---
+
+# 📖 Overview
+
+LifeOS Lite is a full-stack MERN application designed to simplify students' academic life.
+
+It helps students manage daily tasks, study schedules, attendance, analytics, and AI-powered academic assistance through a clean and responsive interface.
+
+---
+
+# ✨ Key Features
+
+| Module | Features |
+|---------|----------|
+| 🔐 Authentication | Register, Login, JWT Authentication |
+| 📊 Dashboard | Productivity Summary & Quick Statistics |
+| ✅ Task Manager | Create, Update, Delete & Complete Tasks |
+| 📚 Study Planner | Daily Study Planning |
+| 📅 Attendance Tracker | Subject-wise Attendance & 75% Calculator |
+| 📈 Analytics | Productivity & Performance Charts |
+| 🤖 AI Assistant | Smart Recommendations & Ask Anything AI |
+| 👤 Profile | User Profile Management |
+
+---
+
+# 📸 Application Screenshots
+
+## 👤 Profile
+
+![Profile](screenshots/profile.png)
+
+![Profile](screenshots/profile1.png)
+
+---
+
+## 🏠 Dashboard
+
+![Dashboard](screenshots/dashbord1.png)
+
+![Dashboard](screenshots/dashboard2.png)
+
+![Dashboard](screenshots/dashboard3.png)
+
+![Dashboard](screenshots/dashboard4.png)
+---
+
+## 📚 Study Planner
+
+![Study Planner](screenshots/studyplanner.png)
+
+---
+
+## ✅ Task Manager
+
+![Task Manager](screenshots/taskmanager.png)
+
+![Task Manager](screenshots/taskmanager1.png)
+
+---
+
+## 📅 Attendance Tracker
+
+![Attendance Tracker](screenshots/attendance.png)
+
+![Attendance Tracker](screenshots/attendance1.png)
+
+---
+
+## 📈 Analytics Dashboard
+
+![Analytics Dashboard](screenshots/analytics.png)
+
+![Analytics Dashboard](screenshots/analytics1.png)
+
+![Analytics Dashboard](screenshots/analytics01.png)
+
+![Analytics Dashboard](screenshots/analytics2.png)
+
+![Analytics Dashboard](screenshots/analytics3.png)
+
+![Analytics Dashboard](screenshots/dashboard4.png)
+
+![Analytics Dashboard](screenshots/analytics5.png)
+
+
+---
+
+## 🤖 AI Assistant
+
+![AI Assistant](screenshots/ai_assistant.png)
+
+![AI Assistant](screenshots/ai_assistant1.png)
+
+![AI Assistant](screenshots/ai_assistant2.png)
+
+![AI Assistant](screenshots/ai_assistant3.png)
+
+![AI Assistant](screenshots/ai_assistant4.png)
+
+---
+
+# 🛠 Tech Stack
+
+## Frontend
+
+- React.js
+- Vite
+- Tailwind CSS
+- React Router
+- Axios
+
+## Backend
+
+- Node.js
+- Express.js
+
+## Database
+
+- MongoDB Atlas
+- Mongoose
+
+## Authentication
+
+- JWT
+- bcrypt
+
+## AI
+
+- Google Gemini API
+
+---
+
+# 📂 Project Structure
 
 ```text
-LifeOS-Lite/
-  client/                 React + Vite + Tailwind application
-  server/                 Express API using MVC architecture
-    config/               Environment and database configuration
-    controllers/          HTTP request handlers
-    middleware/           Authentication, validation, errors, security
-    models/               Mongoose schemas
-    routes/               API route definitions
-    services/             Rule-based AI business logic
-    utils/                Shared calculations and helpers
-    tests/                Node built-in unit tests
+LifeOS-Lite
+│
+├── client
+│   ├── public
+│   ├── src
+│   └── package.json
+│
+├── screenshots
+│   ├── profile.png
+│   ├── dashboard.png
+│   ├── study-planner.png
+│   ├── task-manager.png
+│   ├── attendance.png
+│   ├── analytics.png
+│   └── ai-assistant.png
+│
+├── server
+│   ├── config
+│   ├── controllers
+│   ├── middleware
+│   ├── models
+│   ├── routes
+│   ├── services
+│   ├── utils
+│   └── package.json
+│
+├── .env.example
+├── .gitignore
+└── README.md
 ```
 
-## Setup
+---
 
-1. Install dependencies.
+# 🚀 Getting Started
+
+## Clone Repository
+
+```bash
+git clone https://github.com/aakashkumarrr08-art/LifeOS-Lite.git
+```
+
+Move into the project folder.
+
+```bash
+cd LifeOS-Lite
+```
+
+---
+
+## Install Dependencies
+
+### Client
 
 ```bash
 cd client
 npm install
+```
 
+### Server
+
+```bash
 cd ../server
 npm install
 ```
 
-2. Create the environment files from the examples.
+---
 
-```bash
-cp server/.env.example server/.env
-cp client/.env.example client/.env
+# 🔑 Environment Variables
+
+Create a `.env` file inside the **server** folder.
+
+```env
+PORT=5000
+MONGO_URI=YOUR_MONGODB_URI
+JWT_SECRET=YOUR_SECRET_KEY
+JWT_EXPIRES_IN=7d
+CLIENT_URL=http://localhost:5173
+
+GEMINI_API_KEY=YOUR_GEMINI_API_KEY
+GEMINI_MODEL=gemini-3.1-flash-lite
 ```
 
-3. Set a MongoDB Atlas connection string and a unique JWT secret of at least 32 characters in `server/.env`.
+---
 
-4. Start both applications in separate terminals.
+# ▶️ Run the Project
+
+### Start Backend
 
 ```bash
 cd server
 npm run dev
 ```
 
+Backend runs at:
+
+```
+http://localhost:5000
+```
+
+### Start Frontend
+
 ```bash
 cd client
 npm run dev
 ```
 
-The frontend runs at `http://localhost:5173` and the API runs at `http://localhost:5000` by default.
+Frontend runs at:
 
-## Quality Checks
-
-```bash
-cd client
-npm run lint
-npm run build
+```
+http://localhost:5173
 ```
 
+---
+
+# 🔒 Security
+
+- JWT Authentication
+- Password Hashing using bcrypt
+- Protected Routes
+- Environment Variables
+- MongoDB Atlas
+
+---
+
+# 🎯 Project Highlights
+
+- Full Stack MERN Application
+- REST API Architecture
+- Secure JWT Authentication
+- AI Integration with Google Gemini
+- Analytics Dashboard
+- Responsive User Interface
+- Modular Folder Structure
+- Production Ready Codebase
+
+---
+
+# 🛣 Roadmap
+
+- ✅ Authentication
+- ✅ Dashboard
+- ✅ Task Manager
+- ✅ Study Planner
+- ✅ Attendance Tracker
+- ✅ Analytics Dashboard
+- ✅ AI Assistant
+- ⏳ Email Verification
+- ⏳ Forgot Password
+- ⏳ Push Notifications
+- ⏳ Calendar Integration
+
+---
+
+# 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the repository.
+2. Create a new branch:
+
 ```bash
-cd server
-npm test
-npm audit --omit=dev --audit-level=high
+git checkout -b feature-name
 ```
 
-## API Endpoints
+3. Commit your changes:
 
-| Module | Method | Endpoint |
-| --- | --- | --- |
-| Health | GET | `/api/health` |
-| Auth | POST | `/api/auth/register` |
-| Auth | POST | `/api/auth/login` |
-| Auth | GET | `/api/auth/profile` |
-| Dashboard | GET | `/api/dashboard` |
-| Tasks | GET, POST | `/api/tasks` |
-| Tasks | GET, PUT, DELETE | `/api/tasks/:id` |
-| Attendance | GET, POST | `/api/attendance` |
-| Attendance | GET, PUT, DELETE | `/api/attendance/:id` |
-| Study Sessions | GET, POST | `/api/study-sessions` |
-| Study Sessions | GET, PUT, DELETE | `/api/study-sessions/:id` |
-| Analytics | GET | `/api/analytics` |
-| AI | GET | `/api/ai/dashboard-summary` |
-| AI | POST | `/api/ai/study-plan` |
-| AI | POST | `/api/ai/revision-plan` |
-| AI | POST | `/api/ai/productivity-tips` |
+```bash
+git commit -m "Add new feature"
+```
 
-All non-auth data endpoints require `Authorization: Bearer <token>` and only return data for the authenticated user.
+4. Push the branch:
 
-## Security Notes
+```bash
+git push origin feature-name
+```
 
-- Never commit `.env` files. They are ignored by Git; only `.env.example` files are versioned.
-- Rotate any database or JWT secret that has been shared, exposed, or committed previously.
-- The application uses security headers, request-size limits, CORS allowlisting, API throttling, input validation, and user-scoped MongoDB queries.
-- The AI assistant is deterministic and does not send academic data to an external AI provider.
+5. Open a Pull Request.
+
+---
+
+# 👨‍💻 Author
+
+## Aakash Kumar
+
+B.Tech CSE Student
+
+GitHub: [@aakashkumarrr08-art](https://github.com/aakashkumarrr08-art)
+
+---
+
+# ⭐ Support
+
+If you found this project useful, please consider giving it a **⭐ Star** on GitHub.
+
+Your support motivates future improvements.
+
+---
+
+<p align="center">
+
+Made with ❤️ using React, Node.js, Express.js, MongoDB Atlas & Google Gemini AI
+
+</p>

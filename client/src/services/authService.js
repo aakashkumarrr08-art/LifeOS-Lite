@@ -10,10 +10,9 @@ const loginUser = async (payload) => {
   return response.data;
 };
 
-const getProfile = async () => {
-  const response = await api.get('/auth/profile');
+const getProfile = async (requestConfig = {}) => {
+  const response = await api.get('/auth/profile', requestConfig);
   return response.data;
 };
 
 export { registerUser, loginUser, getProfile };
-

@@ -131,6 +131,9 @@ function RegisterPage() {
             </label>
             <input
               className="form-input"
+              aria-describedby={errors.name ? 'name-error' : undefined}
+              aria-invalid={Boolean(errors.name)}
+              autoComplete="name"
               id="name"
               name="name"
               onChange={handleChange}
@@ -138,7 +141,7 @@ function RegisterPage() {
               type="text"
               value={formData.name}
             />
-            {errors.name ? <p className="form-error">{errors.name}</p> : null}
+            {errors.name ? <p className="form-error" id="name-error">{errors.name}</p> : null}
           </div>
 
           <div>
@@ -147,6 +150,9 @@ function RegisterPage() {
             </label>
             <input
               className="form-input"
+              aria-describedby={errors.email ? 'email-error' : undefined}
+              aria-invalid={Boolean(errors.email)}
+              autoComplete="email"
               id="email"
               name="email"
               onChange={handleChange}
@@ -154,7 +160,7 @@ function RegisterPage() {
               type="email"
               value={formData.email}
             />
-            {errors.email ? <p className="form-error">{errors.email}</p> : null}
+            {errors.email ? <p className="form-error" id="email-error">{errors.email}</p> : null}
           </div>
 
           <div className="grid gap-5 md:grid-cols-2">
@@ -163,7 +169,10 @@ function RegisterPage() {
                 Password
               </label>
               <input
-                className="form-input"
+              className="form-input"
+                aria-describedby={errors.password ? 'password-error' : undefined}
+                aria-invalid={Boolean(errors.password)}
+                autoComplete="new-password"
                 id="password"
                 name="password"
                 onChange={handleChange}
@@ -171,7 +180,7 @@ function RegisterPage() {
                 type="password"
                 value={formData.password}
               />
-              {errors.password ? <p className="form-error">{errors.password}</p> : null}
+              {errors.password ? <p className="form-error" id="password-error">{errors.password}</p> : null}
             </div>
 
             <div>
@@ -182,7 +191,10 @@ function RegisterPage() {
                 Confirm Password
               </label>
               <input
-                className="form-input"
+              className="form-input"
+                aria-describedby={errors.confirmPassword ? 'confirm-password-error' : undefined}
+                aria-invalid={Boolean(errors.confirmPassword)}
+                autoComplete="new-password"
                 id="confirmPassword"
                 name="confirmPassword"
                 onChange={handleChange}
@@ -190,12 +202,12 @@ function RegisterPage() {
                 type="password"
                 value={formData.confirmPassword}
               />
-              {errors.confirmPassword ? <p className="form-error">{errors.confirmPassword}</p> : null}
+              {errors.confirmPassword ? <p className="form-error" id="confirm-password-error">{errors.confirmPassword}</p> : null}
             </div>
           </div>
 
           {submitError ? (
-            <div className="rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-600 dark:text-rose-300">
+            <div aria-live="assertive" className="rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-600 dark:text-rose-300" role="alert">
               {submitError}
             </div>
           ) : null}

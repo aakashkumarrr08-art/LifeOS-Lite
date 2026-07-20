@@ -76,7 +76,7 @@ function AttendanceChart({ data }) {
       </p>
       {data.length > 0 ? (
         <div className="mt-7 h-80">
-          <canvas className="h-full w-full" ref={canvasRef} />
+          <canvas aria-label="Subject-wise attendance chart" className="h-full w-full" ref={canvasRef} role="img" />
         </div>
       ) : (
         <div className="mt-7 flex h-80 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 text-center text-sm leading-6 text-slate-500 dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-400">

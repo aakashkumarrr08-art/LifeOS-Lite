@@ -1,8 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import WeeklyStudyChart from '../components/WeeklyStudyChart.jsx';
 import useAuth from '../hooks/useAuth.js';
+import useRequestLifecycle from '../hooks/useRequestLifecycle.js';
 import { getDashboardData } from '../services/dashboardService.js';
+import { isRequestCanceled } from '../utils/apiError.js';
 
 const accentClasses = {
   amber: 'from-amber-400/20 via-amber-300/10 to-transparent text-amber-600 dark:text-amber-300',
@@ -46,23 +48,37 @@ function DashboardPage() {
   const [dashboardData, setDashboardData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
+  const { createRequestSignal, isMounted } = useRequestLifecycle();
 
-  const loadDashboard = async () => {
+  const loadDashboard = useCallback(async () => {
+    const signal = createRequestSignal();
+
     try {
       setErrorMessage('');
       setIsLoading(true);
-      const response = await getDashboardData();
-      setDashboardData(response.data);
+      const response = await getDashboardData({ signal });
+
+      if (isMounted()) {
+        setDashboardData(response.data);
+      }
     } catch (error) {
-      setErrorMessage(getApiErrorMessage(error));
+      if (isMounted() && !isRequestCanceled(error)) {
+        setErrorMessage(getApiErrorMessage(error));
+      }
     } finally {
-      setIsLoading(false);
+      if (isMounted()) {
+        setIsLoading(false);
+      }
     }
-  };
+  }, [createRequestSignal, isMounted]);
 
   useEffect(() => {
-    loadDashboard();
-  }, []);
+    const timerId = window.setTimeout(() => {
+      void loadDashboard();
+    }, 0);
+
+    return () => window.clearTimeout(timerId);
+  }, [loadDashboard]);
 
   const handleLogout = () => {
     logout();
@@ -104,17 +120,19 @@ function DashboardPage() {
     );
   }
 
-  const { attendance, productivityScore, stats, studyPlanner, studyProgress, todayTasks, upcomingExam, weeklyStudyHours } =
+  const { aiInsights, attendance, productivityScore, stats, studyPlanner, studyProgress, todayTasks, upcomingExam, weeklyStudyHours } =
     dashboardData;
   const joinedOn = user?.createdAt
     ? new Intl.DateTimeFormat('en-IN', {
         dateStyle: 'medium',
       }).format(new Date(user.createdAt))
     : 'Not available';
-  const examDateLabel = new Intl.DateTimeFormat('en-IN', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(new Date(upcomingExam.date));
+  const examDateLabel = upcomingExam.configured
+    ? new Intl.DateTimeFormat('en-IN', {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+      }).format(new Date(upcomingExam.date))
+    : null;
   const attendanceIsAtRisk = attendance.hasRecords && attendance.percentage < 75;
   const attendanceProgressClass = attendanceIsAtRisk
     ? 'bg-gradient-to-r from-rose-500 via-red-500 to-orange-400'
@@ -290,6 +308,35 @@ function DashboardPage() {
         </div>
       </div>
 
+      <div className="dashboard-panel overflow-hidden">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+          <div className="max-w-3xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-cyan-600 dark:text-cyan-300">AI Insights</p>
+            <h3 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">Your next best academic move</h3>
+            <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{aiInsights.todayRecommendation}</p>
+          </div>
+          <Link className="primary-button justify-center" to="/ai-assistant">Open AI Assistant</Link>
+        </div>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="rounded-2xl border border-rose-500/20 bg-rose-500/10 p-4">
+            <p className="text-sm text-rose-700 dark:text-rose-200">Highest Priority Subject</p>
+            <p className="mt-2 font-semibold text-rose-800 dark:text-rose-100">{aiInsights.highestPrioritySubject.subject}</p>
+          </div>
+          <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4">
+            <p className="text-sm text-cyan-700 dark:text-cyan-200">Suggested Study Duration</p>
+            <p className="mt-2 font-semibold text-cyan-800 dark:text-cyan-100">{aiInsights.suggestedStudyDuration.label}</p>
+          </div>
+          <div className="rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4">
+            <p className="text-sm text-amber-700 dark:text-amber-200">Pending Task Reminder</p>
+            <p className="mt-2 text-sm font-semibold leading-6 text-amber-800 dark:text-amber-100">{aiInsights.pendingTaskReminder.message}</p>
+          </div>
+          <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4">
+            <p className="text-sm text-emerald-700 dark:text-emerald-200">Weekly Focus</p>
+            <p className="mt-2 text-sm font-semibold leading-6 text-emerald-800 dark:text-emerald-100">{aiInsights.weeklyFocus}</p>
+          </div>
+        </div>
+      </div>
+
       <div className="grid gap-6 2xl:grid-cols-[1.2fr_0.8fr]">
         <div className="dashboard-panel">
           <div className="flex items-center justify-between gap-4">
@@ -317,9 +364,16 @@ function DashboardPage() {
               Study Progress Card
             </p>
             <h3 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
-              {studyProgress.completedPercentage}% syllabus confidence
+              {studyProgress.completedPercentage}% weekly study goal
             </h3>
-            <div className="mt-6 h-3 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
+            <div
+              aria-label={`${studyProgress.completedPercentage}% of the weekly study goal completed`}
+              aria-valuemax={100}
+              aria-valuemin={0}
+              aria-valuenow={studyProgress.completedPercentage}
+              className="mt-6 h-3 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800"
+              role="progressbar"
+            >
               <div
                 className="h-full rounded-full bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-500"
                 style={{ width: `${studyProgress.completedPercentage}%` }}
@@ -427,7 +481,14 @@ function DashboardPage() {
             <h3 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
               {attendance.hasRecords ? `${attendance.percentage}% semester attendance` : 'Start tracking attendance'}
             </h3>
-            <div className="mt-6 h-3 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
+            <div
+              aria-label={`${attendance.percentage}% attendance`}
+              aria-valuemax={100}
+              aria-valuemin={0}
+              aria-valuenow={attendance.percentage}
+              className="mt-6 h-3 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800"
+              role="progressbar"
+            >
               <div
                 className={`h-full rounded-full ${attendanceProgressClass}`}
                 style={{ width: `${attendance.percentage}%` }}
@@ -462,23 +523,30 @@ function DashboardPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">
               Upcoming Exam Countdown Card
             </p>
-            <h3 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
-              {upcomingExam.title}
-            </h3>
-            <div className="mt-6 flex items-end gap-4">
-              <p className="text-5xl font-semibold tracking-tight text-slate-950 dark:text-white">
-                {upcomingExam.daysRemaining}
+            {upcomingExam.configured ? (
+              <>
+                <h3 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
+                  {upcomingExam.title}
+                </h3>
+                <div className="mt-6 flex items-end gap-4">
+                  <p className="text-5xl font-semibold tracking-tight text-slate-950 dark:text-white">
+                    {upcomingExam.daysRemaining}
+                  </p>
+                  <p className="pb-2 text-sm font-medium uppercase tracking-[0.28em] text-cyan-600 dark:text-cyan-300">
+                    Days Left
+                  </p>
+                </div>
+                <div className="mt-6 space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                  <p>Date: {examDateLabel}</p>
+                  <p>Course: {upcomingExam.courseCode}</p>
+                  <p>Venue: {upcomingExam.venue}</p>
+                </div>
+              </>
+            ) : (
+              <p className="mt-4 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                {upcomingExam.message}
               </p>
-              <p className="pb-2 text-sm font-medium uppercase tracking-[0.28em] text-cyan-600 dark:text-cyan-300">
-                Days Left
-              </p>
-            </div>
-            <div className="mt-6 space-y-3 text-sm text-slate-600 dark:text-slate-300">
-              <p>Date: {examDateLabel}</p>
-              <p>Course: {upcomingExam.courseCode}</p>
-              <p>Venue: {upcomingExam.venue}</p>
-              <p>Syllabus Coverage: {upcomingExam.syllabusCoverage}%</p>
-            </div>
+            )}
           </div>
         </div>
 
@@ -506,6 +574,9 @@ function DashboardPage() {
               <Link className="secondary-button w-full justify-center" to="/analytics">
                 Open Analytics
               </Link>
+              <Link className="secondary-button w-full justify-center" to="/ai-assistant">
+                Open AI Assistant
+              </Link>
               <button className="secondary-button w-full justify-center" onClick={handleLogout} type="button">
                 Logout
               </button>
@@ -517,10 +588,10 @@ function DashboardPage() {
               Today&apos;s Focus
             </p>
             <h3 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
-              Keep momentum through evening revision.
+              {aiInsights.highestPrioritySubject.subject} needs your attention.
             </h3>
             <p className="mt-4 text-sm leading-6 text-slate-600 dark:text-slate-300">
-              You have already completed more than half of today&apos;s plan. Finishing the assignment submission and flashcard review will keep your score in the strong range.
+              {aiInsights.todayRecommendation}
             </p>
           </div>
         </div>

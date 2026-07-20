@@ -40,6 +40,11 @@ const taskSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
       index: true,
+      immutable: true,
+    },
+    completedAt: {
+      type: Date,
+      default: null,
     },
   },
   {
@@ -47,7 +52,17 @@ const taskSchema = new mongoose.Schema(
   },
 );
 
-taskSchema.index({ userId: 1, dueDate: 1 });
+taskSchema.pre('validate', function setCompletionTimestamp() {
+  if (this.status === 'Completed' && !this.completedAt) {
+    this.completedAt = new Date();
+  }
+
+  if (this.status !== 'Completed') {
+    this.completedAt = null;
+  }
+});
+
+taskSchema.index({ userId: 1, status: 1, dueDate: 1 });
 
 taskSchema.set('toJSON', {
   transform: (_document, returnedObject) => {
@@ -61,4 +76,3 @@ taskSchema.set('toJSON', {
 const Task = mongoose.model('Task', taskSchema);
 
 export default Task;
-

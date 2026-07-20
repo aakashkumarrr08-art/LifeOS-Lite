@@ -5,6 +5,7 @@ import {
   registerUser,
 } from '../controllers/authController.js';
 import { protect } from '../middleware/authMiddleware.js';
+import { authRateLimiter } from '../middleware/securityMiddleware.js';
 import {
   validateLoginInput,
   validateRegisterInput,
@@ -12,9 +13,8 @@ import {
 
 const router = Router();
 
-router.post('/register', validateRegisterInput, registerUser);
-router.post('/login', validateLoginInput, loginUser);
+router.post('/register', authRateLimiter, validateRegisterInput, registerUser);
+router.post('/login', authRateLimiter, validateLoginInput, loginUser);
 router.get('/profile', protect, getUserProfile);
 
 export default router;
-

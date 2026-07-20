@@ -1,19 +1,17 @@
 import mongoose from 'mongoose';
+import { config } from './env.js';
 
 const connectDB = async () => {
-  if (!process.env.MONGO_URI) {
-    console.warn('MONGO_URI is not set. MongoDB connection skipped.');
-    return;
+  if (!config.mongoUri) {
+    throw new Error('MONGO_URI is required to start the server.');
   }
 
-  try {
-    const connection = await mongoose.connect(process.env.MONGO_URI);
-    console.log(`MongoDB connected: ${connection.connection.host}`);
-  } catch (error) {
-    console.error(`MongoDB connection error: ${error.message}`);
-    process.exit(1);
-  }
-};  
+  const connection = await mongoose.connect(config.mongoUri, {
+    maxPoolSize: 10,
+    serverSelectionTimeoutMS: 10000,
+  });
+
+  console.log(`MongoDB connected: ${connection.connection.host}`);
+};
 
 export default connectDB;
-

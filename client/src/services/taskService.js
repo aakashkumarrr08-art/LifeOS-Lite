@@ -1,7 +1,7 @@
 import api from './api.js';
 
-const getTasks = async () => {
-  const response = await api.get('/tasks');
+const getTasks = async (requestConfig = {}) => {
+  const response = await api.get('/tasks', requestConfig);
   return response.data;
 };
 
@@ -21,4 +21,3 @@ const deleteTask = async (taskId) => {
 };
 
 export { getTasks, createTask, updateTask, deleteTask };
-

@@ -60,31 +60,23 @@ const getTaskById = asyncHandler(async (req, res) => {
 const updateTask = asyncHandler(async (req, res) => {
   ensureValidTaskId(req.params.id);
 
-  const { title, description, subject, priority, status, dueDate } = req.body;
-  const updates = {
-    ...(title !== undefined && { title }),
-    ...(description !== undefined && { description }),
-    ...(subject !== undefined && { subject }),
-    ...(priority !== undefined && { priority }),
-    ...(status !== undefined && { status }),
-    ...(dueDate !== undefined && { dueDate }),
-  };
-
-  const task = await Task.findOneAndUpdate(
-    {
-      _id: req.params.id,
-      userId: req.user._id,
-    },
-    updates,
-    {
-      new: true,
-      runValidators: true,
-    },
-  );
+  const task = await Task.findOne({
+    _id: req.params.id,
+    userId: req.user._id,
+  });
 
   if (!task) {
     throw createHttpError(404, 'Task not found.');
   }
+
+  const allowedFields = ['title', 'description', 'subject', 'priority', 'status', 'dueDate'];
+  allowedFields.forEach((field) => {
+    if (req.body[field] !== undefined) {
+      task[field] = req.body[field];
+    }
+  });
+
+  await task.save();
 
   res.status(200).json({
     success: true,
@@ -112,4 +104,3 @@ const deleteTask = asyncHandler(async (req, res) => {
 });
 
 export { createTask, getTasks, getTaskById, updateTask, deleteTask };
-

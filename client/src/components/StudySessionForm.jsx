@@ -1,5 +1,10 @@
-import { useEffect, useState } from 'react';
-import { calculateDuration, formatDuration, getTodayDateKey } from '../utils/studySessionUtils.js';
+import { useState } from 'react';
+import {
+  calculateDuration,
+  formatDuration,
+  getDateKey,
+  getTodayDateKey,
+} from '../utils/studySessionUtils.js';
 
 const getInitialFormData = () => ({
   subject: '',
@@ -17,7 +22,7 @@ const getStudySessionFormData = (studySession) =>
     ? {
         subject: studySession.subject || '',
         topic: studySession.topic || '',
-        date: studySession.date ? new Date(studySession.date).toISOString().slice(0, 10) : getTodayDateKey(),
+        date: studySession.date ? getDateKey(studySession.date) : getTodayDateKey(),
         startTime: studySession.startTime || '09:00',
         endTime: studySession.endTime || '10:00',
         priority: studySession.priority || 'Medium',
@@ -30,11 +35,6 @@ function StudySessionForm({ isSubmitting, onSubmit, studySession }) {
   const [formData, setFormData] = useState(getStudySessionFormData(studySession));
   const [errors, setErrors] = useState({});
   const duration = calculateDuration(formData.startTime, formData.endTime);
-
-  useEffect(() => {
-    setFormData(getStudySessionFormData(studySession));
-    setErrors({});
-  }, [studySession]);
 
   const validateForm = () => {
     const nextErrors = {};

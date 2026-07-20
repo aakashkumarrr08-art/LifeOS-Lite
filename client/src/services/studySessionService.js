@@ -1,7 +1,7 @@
 import api from './api.js';
 
-const getStudySessions = async () => {
-  const response = await api.get('/study-sessions');
+const getStudySessions = async (requestConfig = {}) => {
+  const response = await api.get('/study-sessions', requestConfig);
   return response.data;
 };
 

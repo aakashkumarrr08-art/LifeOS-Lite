@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const initialFormData = {
   title: '',
@@ -15,7 +15,12 @@ const formatDateForInput = (dateValue) => {
   }
 
   const date = new Date(dateValue);
-  return Number.isNaN(date.getTime()) ? '' : date.toISOString().slice(0, 10);
+
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 };
 
 const getTaskFormData = (task) =>
@@ -33,11 +38,6 @@ const getTaskFormData = (task) =>
 function TaskForm({ isSubmitting, onSubmit, task }) {
   const [formData, setFormData] = useState(getTaskFormData(task));
   const [errors, setErrors] = useState({});
-
-  useEffect(() => {
-    setFormData(getTaskFormData(task));
-    setErrors({});
-  }, [task]);
 
   const validateForm = () => {
     const nextErrors = {};
@@ -191,4 +191,3 @@ function TaskForm({ isSubmitting, onSubmit, task }) {
 }
 
 export default TaskForm;
-

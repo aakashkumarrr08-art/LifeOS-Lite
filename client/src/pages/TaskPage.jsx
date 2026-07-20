@@ -1,13 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import TaskCard from '../components/TaskCard.jsx';
 import TaskFilter from '../components/TaskFilter.jsx';
 import TaskModal from '../components/TaskModal.jsx';
+import useRequestLifecycle from '../hooks/useRequestLifecycle.js';
 import {
   createTask,
   deleteTask,
   getTasks,
   updateTask,
 } from '../services/taskService.js';
+import { isRequestCanceled } from '../utils/apiError.js';
 
 const defaultFilters = {
   status: '',
@@ -30,23 +32,37 @@ function TaskPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [actionMessage, setActionMessage] = useState('');
   const [modalError, setModalError] = useState('');
+  const { createRequestSignal, isMounted } = useRequestLifecycle();
 
-  const loadTasks = async () => {
+  const loadTasks = useCallback(async () => {
+    const signal = createRequestSignal();
+
     try {
       setErrorMessage('');
       setIsLoading(true);
-      const response = await getTasks();
-      setTasks(response.tasks);
+      const response = await getTasks({ signal });
+
+      if (isMounted()) {
+        setTasks(response.tasks);
+      }
     } catch (error) {
-      setErrorMessage(getApiErrorMessage(error));
+      if (isMounted() && !isRequestCanceled(error)) {
+        setErrorMessage(getApiErrorMessage(error));
+      }
     } finally {
-      setIsLoading(false);
+      if (isMounted()) {
+        setIsLoading(false);
+      }
     }
-  };
+  }, [createRequestSignal, isMounted]);
 
   useEffect(() => {
-    loadTasks();
-  }, []);
+    const timerId = window.setTimeout(() => {
+      void loadTasks();
+    }, 0);
+
+    return () => window.clearTimeout(timerId);
+  }, [loadTasks]);
 
   const openCreateModal = () => {
     setSelectedTask(null);

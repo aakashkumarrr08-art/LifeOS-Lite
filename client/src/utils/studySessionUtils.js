@@ -1,4 +1,14 @@
-const getDateKey = (value) => new Date(value).toISOString().slice(0, 10);
+const padDatePart = (value) => String(value).padStart(2, '0');
+
+const getDateKey = (value) => {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+
+  return `${date.getFullYear()}-${padDatePart(date.getMonth() + 1)}-${padDatePart(date.getDate())}`;
+};
 
 const getTodayDateKey = () => getDateKey(new Date());
 

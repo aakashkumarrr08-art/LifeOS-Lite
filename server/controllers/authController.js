@@ -5,8 +5,6 @@ import createHttpError from '../utils/createHttpError.js';
 import generateToken from '../utils/generateToken.js';
 
 const ensureDatabaseConnection = () => {
-  console.log("Mongoose readyState =", mongoose.connection.readyState);
-
   if (mongoose.connection.readyState !== 1) {
     throw createHttpError(
       503,
@@ -71,4 +69,3 @@ const getUserProfile = asyncHandler(async (req, res) => {
 });
 
 export { registerUser, loginUser, getUserProfile };
-

@@ -3,16 +3,16 @@ import useAuth from '../hooks/useAuth.js';
 
 const authFeatures = [
   {
-    title: 'Modern Dashboard',
-    description: 'A responsive student dashboard with cards, charts, progress insights, and dark mode.',
+    title: 'Connected Workspace',
+    description: 'Tasks, attendance, study sessions, analytics, and dashboard insights share the same protected account data.',
   },
   {
     title: 'Protected Access',
     description: 'The dashboard remains behind JWT authentication and uses the existing secure session flow.',
   },
   {
-    title: 'Server Demo API',
-    description: 'Dashboard statistics now come from a real backend endpoint designed for the viva demo.',
+    title: 'Rule-Based Study Assistant',
+    description: 'Transparent recommendations turn your own workload, study schedule, and attendance into practical next actions.',
   },
 ];
 
@@ -25,15 +25,14 @@ function HomePage() {
         <div className="grid gap-10 px-8 py-10 lg:grid-cols-[1.15fr_0.85fr] lg:px-10">
           <div className="space-y-6">
             <div className="inline-flex rounded-full border border-cyan-500/20 bg-cyan-500/10 px-4 py-1 text-sm font-medium text-cyan-700 dark:text-cyan-300">
-              Phase 4 Task Management
+              Full Student Productivity Workspace
             </div>
             <div className="space-y-4">
               <h2 className="max-w-3xl text-4xl font-semibold tracking-tight text-slate-950 dark:text-white">
-                LifeOS Lite now combines a modern dashboard with a complete task manager.
+                Plan, track, and improve your academic work from one secure dashboard.
               </h2>
               <p className="max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-300">
-                Create, edit, complete, delete, and filter personal study tasks while your dashboard
-                reflects real task totals and upcoming deadlines from MongoDB.
+                Manage tasks, attendance, and study sessions while analytics and the rule-based AI assistant turn your real MongoDB data into clear next steps.
               </p>
             </div>
 
@@ -45,6 +44,9 @@ function HomePage() {
                   </Link>
                   <Link className="secondary-button" to="/tasks">
                     Manage Tasks
+                  </Link>
+                  <Link className="secondary-button" to="/ai-assistant">
+                    Open AI Assistant
                   </Link>
                   <span className="inline-flex items-center rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-sm font-medium text-emerald-600 dark:text-emerald-300">
                     Signed in as {user?.name}
@@ -81,7 +83,7 @@ function HomePage() {
               <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                 <p className="font-semibold text-white">Backend API</p>
                 <p className="mt-2">
-                  Available endpoints include authentication, protected dashboard statistics, and user-scoped task CRUD.
+                  Available endpoints cover authentication, dashboard data, tasks, attendance, study sessions, analytics, and AI recommendations.
                 </p>
               </div>
             </div>

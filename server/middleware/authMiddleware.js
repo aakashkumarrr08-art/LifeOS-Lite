@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 import User from '../models/User.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import createHttpError from '../utils/createHttpError.js';
@@ -6,7 +7,9 @@ import createHttpError from '../utils/createHttpError.js';
 const protect = asyncHandler(async (req, _res, next) => {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  const tokenMatch = authHeader?.match(/^Bearer\s+(.+)$/i);
+
+  if (!tokenMatch) {
     throw createHttpError(401, 'Authorization token is missing.');
   }
 
@@ -14,8 +17,15 @@ const protect = asyncHandler(async (req, _res, next) => {
     throw createHttpError(500, 'JWT_SECRET is not configured on the server.');
   }
 
-  const token = authHeader.split(' ')[1];
-  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+  const token = tokenMatch[1];
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET, {
+    algorithms: ['HS256'],
+  });
+
+  if (!mongoose.isValidObjectId(decodedToken.userId)) {
+    throw createHttpError(401, 'Authorization token is invalid.');
+  }
+
   const user = await User.findById(decodedToken.userId);
 
   if (!user) {
@@ -27,4 +37,3 @@ const protect = asyncHandler(async (req, _res, next) => {
 });
 
 export { protect };
-

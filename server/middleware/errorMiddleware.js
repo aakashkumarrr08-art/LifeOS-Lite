@@ -45,11 +45,19 @@ const errorHandler = (error, _req, res, _next) => {
   }
 
   const statusCode = error.statusCode || (res.statusCode !== 200 ? res.statusCode : 500);
+  const isServerError = statusCode >= 500;
+
+  if (isServerError) {
+    console.error(error);
+  }
 
   res.status(statusCode).json({
     success: false,
-    message: error.message || 'Internal server error.',
-    errors: Array.isArray(error.errors) && error.errors.length > 0 ? error.errors : undefined,
+    message: isServerError ? 'Internal server error.' : error.message || 'Request failed.',
+    errors:
+      !isServerError && Array.isArray(error.errors) && error.errors.length > 0
+        ? error.errors
+        : undefined,
     stack: process.env.NODE_ENV === 'production' ? undefined : error.stack,
   });
 };

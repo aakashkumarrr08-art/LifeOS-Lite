@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { calculateStudyDuration } from '../utils/studySessionUtils.js';
 
 const studySessionSchema = new mongoose.Schema(
   {
@@ -54,6 +55,7 @@ const studySessionSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
       index: true,
+      immutable: true,
     },
   },
   {
@@ -61,7 +63,18 @@ const studySessionSchema = new mongoose.Schema(
   },
 );
 
-studySessionSchema.index({ userId: 1, date: 1, startTime: 1 });
+studySessionSchema.pre('validate', function setDurationFromTimes() {
+  const duration = calculateStudyDuration(this.startTime, this.endTime);
+
+  if (!duration) {
+    this.invalidate('endTime', 'End time must be later than start time.');
+    return;
+  }
+
+  this.duration = duration;
+});
+
+studySessionSchema.index({ userId: 1, status: 1, date: 1, startTime: 1 });
 
 studySessionSchema.set('toJSON', {
   transform: (_document, returnedObject) => {

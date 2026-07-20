@@ -15,6 +15,9 @@ function AppLayout() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
+      <a className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:text-slate-950" href="#main-content">
+        Skip to main content
+      </a>
       <header className="border-b border-slate-200/70 bg-white/75 backdrop-blur dark:border-slate-800 dark:bg-slate-950/80">
         <div className="mx-auto flex max-w-7xl flex-col gap-5 px-6 py-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center justify-between gap-4">
@@ -25,7 +28,7 @@ function AppLayout() {
               <h1 className="text-2xl font-bold tracking-tight">LifeOS Lite</h1>
             </div>
             <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-300 lg:hidden">
-              Phase 4 Tasks
+              All Modules Active
             </span>
           </div>
 
@@ -57,7 +60,7 @@ function AppLayout() {
 
             <div className="flex flex-wrap items-center gap-3">
               <span className="hidden rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-300 lg:inline-flex">
-                Phase 4 Tasks
+                All Modules Active
               </span>
               <ThemeToggleButton />
               {authReady && isAuthenticated ? (
@@ -79,7 +82,7 @@ function AppLayout() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-6 py-10">
+      <main className="mx-auto max-w-7xl px-6 py-10" id="main-content">
         <Outlet />
       </main>
     </div>

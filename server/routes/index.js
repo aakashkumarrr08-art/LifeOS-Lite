@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import attendanceRoutes from './attendanceRoutes.js';
+import aiRoutes from './aiRoutes.js';
 import analyticsRoutes from './analyticsRoutes.js';
 import authRoutes from './authRoutes.js';
 import dashboardRoutes from './dashboardRoutes.js';
@@ -16,5 +17,6 @@ router.use('/tasks', taskRoutes);
 router.use('/attendance', attendanceRoutes);
 router.use('/analytics', analyticsRoutes);
 router.use('/study-sessions', studySessionRoutes);
+router.use('/ai', aiRoutes);
 
 export default router;

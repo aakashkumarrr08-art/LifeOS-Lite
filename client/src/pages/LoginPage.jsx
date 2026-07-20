@@ -117,6 +117,9 @@ function LoginPage() {
             </label>
             <input
               className="form-input"
+              aria-describedby={errors.email ? 'email-error' : undefined}
+              aria-invalid={Boolean(errors.email)}
+              autoComplete="email"
               id="email"
               name="email"
               onChange={handleChange}
@@ -124,7 +127,7 @@ function LoginPage() {
               type="email"
               value={formData.email}
             />
-            {errors.email ? <p className="form-error">{errors.email}</p> : null}
+            {errors.email ? <p className="form-error" id="email-error">{errors.email}</p> : null}
           </div>
 
           <div>
@@ -133,6 +136,9 @@ function LoginPage() {
             </label>
             <input
               className="form-input"
+              aria-describedby={errors.password ? 'password-error' : undefined}
+              aria-invalid={Boolean(errors.password)}
+              autoComplete="current-password"
               id="password"
               name="password"
               onChange={handleChange}
@@ -140,11 +146,11 @@ function LoginPage() {
               type="password"
               value={formData.password}
             />
-            {errors.password ? <p className="form-error">{errors.password}</p> : null}
+            {errors.password ? <p className="form-error" id="password-error">{errors.password}</p> : null}
           </div>
 
           {submitError ? (
-            <div className="rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-600 dark:text-rose-300">
+            <div aria-live="assertive" className="rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-600 dark:text-rose-300" role="alert">
               {submitError}
             </div>
           ) : null}

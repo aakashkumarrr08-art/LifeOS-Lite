@@ -34,7 +34,9 @@ const buildWeeklyProgress = (tasks, now) => {
       label: new Intl.DateTimeFormat('en-IN', { weekday: 'short' }).format(dayStart),
       createdTasks: tasks.filter((task) => isWithinRange(task.createdAt, dayStart, dayEnd)).length,
       completedTasks: tasks.filter(
-        (task) => task.status === 'Completed' && isWithinRange(task.updatedAt, dayStart, dayEnd),
+        (task) =>
+          task.status === 'Completed' &&
+          isWithinRange(task.completedAt || task.updatedAt, dayStart, dayEnd),
       ).length,
       dueTasks: tasks.filter((task) => isWithinRange(task.dueDate, dayStart, dayEnd)).length,
     };
@@ -77,8 +79,8 @@ const buildMonthlyProgress = (tasks, now) => {
 const getAnalytics = asyncHandler(async (req, res) => {
   const taskQuery = { userId: req.user._id };
   const [tasks, attendanceRecords] = await Promise.all([
-    Task.find(taskQuery).sort({ createdAt: 1 }),
-    Attendance.find(taskQuery).sort({ subject: 1 }),
+    Task.find(taskQuery).sort({ createdAt: 1 }).lean(),
+    Attendance.find(taskQuery).sort({ subject: 1 }).lean(),
   ]);
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((task) => task.status === 'Completed').length;

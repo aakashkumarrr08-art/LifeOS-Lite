@@ -30,7 +30,14 @@ function AttendanceCard({ attendance, onDelete, onEdit }) {
         </span>
       </div>
 
-      <div className="mt-6 h-3 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
+      <div
+        aria-label={`${attendance.subject} attendance: ${formatPercentage(percentage)}`}
+        aria-valuemax={100}
+        aria-valuemin={0}
+        aria-valuenow={percentage}
+        className="mt-6 h-3 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800"
+        role="progressbar"
+      >
         <div
           className={`h-full rounded-full transition-all duration-300 ${
             isAtRisk
@@ -65,11 +72,12 @@ function AttendanceCard({ attendance, onDelete, onEdit }) {
       </div>
 
       <div className="mt-6 flex flex-wrap gap-3 border-t border-slate-200/70 pt-5 dark:border-slate-800">
-        <button className="secondary-button px-4 py-2" onClick={() => onEdit(attendance)} type="button">
+        <button aria-label={`Edit attendance for ${attendance.subject}`} className="secondary-button px-4 py-2" onClick={() => onEdit(attendance)} type="button">
           Edit
         </button>
         <button
           className="secondary-button border-rose-500/20 px-4 py-2 text-rose-600 hover:border-rose-500/30 hover:bg-rose-500/10 dark:text-rose-300"
+          aria-label={`Delete attendance for ${attendance.subject}`}
           onClick={() => onDelete(attendance)}
           type="button"
         >

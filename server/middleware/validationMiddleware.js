@@ -2,11 +2,49 @@ import createHttpError from '../utils/createHttpError.js';
 import { calculateStudyDuration, isValidStudyTime } from '../utils/studySessionUtils.js';
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const dateOnlyPattern = /^\d{4}-\d{2}-\d{2}$/;
 const taskPriorities = ['Low', 'Medium', 'High'];
 const taskStatuses = ['Pending', 'In Progress', 'Completed'];
 const studySessionStatuses = ['Pending', 'Completed'];
 
 const isWholeNumber = (value) => typeof value === 'number' && Number.isSafeInteger(value);
+
+const normalizeText = (value) => value.trim().replace(/\s+/g, ' ');
+
+const validateRequestBody = (body, allowedFields, errors) => {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    errors.push({ field: 'body', message: 'Request body must be a JSON object.' });
+    return false;
+  }
+
+  Object.keys(body).forEach((field) => {
+    if (!allowedFields.includes(field)) {
+      errors.push({ field, message: 'This field is not allowed.' });
+    }
+  });
+
+  return errors.length === 0;
+};
+
+const parseDateOnly = (value) => {
+  if (typeof value !== 'string' || !dateOnlyPattern.test(value)) {
+    return null;
+  }
+
+  const [year, month, day] = value.split('-').map(Number);
+  // Midday UTC keeps a date-only value on the same calendar day for most user time zones.
+  const date = new Date(Date.UTC(year, month - 1, day, 12));
+
+  if (
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() !== month - 1 ||
+    date.getUTCDate() !== day
+  ) {
+    return null;
+  }
+
+  return date;
+};
 
 const validateAttendanceFields = (attendance, errors, isUpdate = false) => {
   const { subject, totalClasses, attendedClasses, minimumAttendance } = attendance;
@@ -53,14 +91,19 @@ const validateAttendanceFields = (attendance, errors, isUpdate = false) => {
 };
 
 const validateRegisterInput = (req, _res, next) => {
-  const { name, email, password } = req.body;
   const errors = [];
+
+  if (!validateRequestBody(req.body, ['name', 'email', 'password'], errors)) {
+    return next(createHttpError(400, 'Please correct the highlighted fields.', errors));
+  }
+
+  const { name, email, password } = req.body;
 
   if (typeof name !== 'string' || !name.trim()) {
     errors.push({ field: 'name', message: 'Name is required.' });
-  } else if (name.trim().length < 2) {
+  } else if (normalizeText(name).length < 2) {
     errors.push({ field: 'name', message: 'Name must be at least 2 characters long.' });
-  } else if (name.trim().length > 50) {
+  } else if (normalizeText(name).length > 50) {
     errors.push({ field: 'name', message: 'Name must not exceed 50 characters.' });
   }
 
@@ -74,20 +117,27 @@ const validateRegisterInput = (req, _res, next) => {
     errors.push({ field: 'password', message: 'Password is required.' });
   } else if (password.length < 6) {
     errors.push({ field: 'password', message: 'Password must be at least 6 characters long.' });
+  } else if (Buffer.byteLength(password, 'utf8') > 72) {
+    errors.push({ field: 'password', message: 'Password must not exceed 72 bytes.' });
   }
 
   if (errors.length > 0) {
     return next(createHttpError(400, 'Please correct the highlighted fields.', errors));
   }
 
-  req.body.name = name.trim();
+  req.body.name = normalizeText(name);
   req.body.email = email.trim().toLowerCase();
   next();
 };
 
 const validateLoginInput = (req, _res, next) => {
-  const { email, password } = req.body;
   const errors = [];
+
+  if (!validateRequestBody(req.body, ['email', 'password'], errors)) {
+    return next(createHttpError(400, 'Please correct the highlighted fields.', errors));
+  }
+
+  const { email, password } = req.body;
 
   if (typeof email !== 'string' || !email.trim()) {
     errors.push({ field: 'email', message: 'Email is required.' });
@@ -108,8 +158,19 @@ const validateLoginInput = (req, _res, next) => {
 };
 
 const validateTaskCreateInput = (req, _res, next) => {
-  const { title, description, subject, priority, status, dueDate } = req.body;
   const errors = [];
+
+  if (
+    !validateRequestBody(
+      req.body,
+      ['title', 'description', 'subject', 'priority', 'status', 'dueDate'],
+      errors,
+    )
+  ) {
+    return next(createHttpError(400, 'Please correct the task fields.', errors));
+  }
+
+  const { title, description, subject, priority, status, dueDate } = req.body;
 
   if (typeof title !== 'string' || !title.trim()) {
     errors.push({ field: 'title', message: 'Task title is required.' });
@@ -135,7 +196,9 @@ const validateTaskCreateInput = (req, _res, next) => {
     errors.push({ field: 'status', message: 'Status must be Pending, In Progress, or Completed.' });
   }
 
-  if (typeof dueDate !== 'string' || !dueDate || Number.isNaN(new Date(dueDate).getTime())) {
+  const parsedDueDate = parseDateOnly(dueDate);
+
+  if (!parsedDueDate) {
     errors.push({ field: 'dueDate', message: 'A valid due date is required.' });
   }
 
@@ -143,17 +206,22 @@ const validateTaskCreateInput = (req, _res, next) => {
     return next(createHttpError(400, 'Please correct the task fields.', errors));
   }
 
-  req.body.title = title.trim();
+  req.body.title = normalizeText(title);
   req.body.description = description?.trim() || '';
-  req.body.subject = subject.trim();
-  req.body.dueDate = new Date(dueDate).toISOString();
+  req.body.subject = normalizeText(subject);
+  req.body.dueDate = parsedDueDate.toISOString();
   next();
 };
 
 const validateTaskUpdateInput = (req, _res, next) => {
   const allowedFields = ['title', 'description', 'subject', 'priority', 'status', 'dueDate'];
-  const suppliedFields = allowedFields.filter((field) => req.body[field] !== undefined);
   const errors = [];
+
+  if (!validateRequestBody(req.body, allowedFields, errors)) {
+    return next(createHttpError(400, 'Please correct the task fields.', errors));
+  }
+
+  const suppliedFields = allowedFields.filter((field) => req.body[field] !== undefined);
 
   if (suppliedFields.length === 0) {
     errors.push({ field: 'task', message: 'Provide at least one task field to update.' });
@@ -165,7 +233,7 @@ const validateTaskUpdateInput = (req, _res, next) => {
     } else if (req.body.title.trim().length < 2 || req.body.title.trim().length > 120) {
       errors.push({ field: 'title', message: 'Task title must be between 2 and 120 characters.' });
     } else {
-      req.body.title = req.body.title.trim();
+      req.body.title = normalizeText(req.body.title);
     }
   }
 
@@ -183,7 +251,7 @@ const validateTaskUpdateInput = (req, _res, next) => {
     } else if (req.body.subject.trim().length > 80) {
       errors.push({ field: 'subject', message: 'Subject must not exceed 80 characters.' });
     } else {
-      req.body.subject = req.body.subject.trim();
+      req.body.subject = normalizeText(req.body.subject);
     }
   }
 
@@ -196,10 +264,12 @@ const validateTaskUpdateInput = (req, _res, next) => {
   }
 
   if (req.body.dueDate !== undefined) {
-    if (typeof req.body.dueDate !== 'string' || Number.isNaN(new Date(req.body.dueDate).getTime())) {
+    const parsedDueDate = parseDateOnly(req.body.dueDate);
+
+    if (!parsedDueDate) {
       errors.push({ field: 'dueDate', message: 'Provide a valid due date.' });
     } else {
-      req.body.dueDate = new Date(req.body.dueDate).toISOString();
+      req.body.dueDate = parsedDueDate.toISOString();
     }
   }
 
@@ -213,6 +283,16 @@ const validateTaskUpdateInput = (req, _res, next) => {
 const validateAttendanceCreateInput = (req, _res, next) => {
   const errors = [];
 
+  if (
+    !validateRequestBody(
+      req.body,
+      ['subject', 'totalClasses', 'attendedClasses', 'minimumAttendance'],
+      errors,
+    )
+  ) {
+    return next(createHttpError(400, 'Please correct the attendance fields.', errors));
+  }
+
   validateAttendanceFields(req.body, errors);
 
   if (errors.length > 0) {
@@ -224,8 +304,13 @@ const validateAttendanceCreateInput = (req, _res, next) => {
 
 const validateAttendanceUpdateInput = (req, _res, next) => {
   const allowedFields = ['subject', 'totalClasses', 'attendedClasses', 'minimumAttendance'];
-  const suppliedFields = allowedFields.filter((field) => req.body[field] !== undefined);
   const errors = [];
+
+  if (!validateRequestBody(req.body, allowedFields, errors)) {
+    return next(createHttpError(400, 'Please correct the attendance fields.', errors));
+  }
+
+  const suppliedFields = allowedFields.filter((field) => req.body[field] !== undefined);
 
   if (suppliedFields.length === 0) {
     errors.push({ field: 'attendance', message: 'Provide at least one attendance field to update.' });
@@ -249,7 +334,7 @@ const validateStudySessionFields = (studySession, errors, isUpdate = false) => {
     } else if (subject.trim().length > 80) {
       errors.push({ field: 'subject', message: 'Subject must not exceed 80 characters.' });
     } else {
-      studySession.subject = subject.trim();
+      studySession.subject = normalizeText(subject);
     }
   }
 
@@ -259,15 +344,17 @@ const validateStudySessionFields = (studySession, errors, isUpdate = false) => {
     } else if (topic.trim().length > 120) {
       errors.push({ field: 'topic', message: 'Topic must not exceed 120 characters.' });
     } else {
-      studySession.topic = topic.trim();
+      studySession.topic = normalizeText(topic);
     }
   }
 
   if (!isUpdate || date !== undefined) {
-    if (typeof date !== 'string' || !date || Number.isNaN(new Date(date).getTime())) {
+    const parsedStudyDate = parseDateOnly(date);
+
+    if (!parsedStudyDate) {
       errors.push({ field: 'date', message: 'A valid study date is required.' });
     } else {
-      studySession.date = new Date(date).toISOString();
+      studySession.date = parsedStudyDate.toISOString();
     }
   }
 
@@ -318,6 +405,16 @@ const validateStudySessionFields = (studySession, errors, isUpdate = false) => {
 const validateStudySessionCreateInput = (req, _res, next) => {
   const errors = [];
 
+  if (
+    !validateRequestBody(
+      req.body,
+      ['subject', 'topic', 'date', 'startTime', 'endTime', 'priority', 'status', 'notes'],
+      errors,
+    )
+  ) {
+    return next(createHttpError(400, 'Please correct the study session fields.', errors));
+  }
+
   validateStudySessionFields(req.body, errors);
 
   if (errors.length > 0) {
@@ -329,8 +426,13 @@ const validateStudySessionCreateInput = (req, _res, next) => {
 
 const validateStudySessionUpdateInput = (req, _res, next) => {
   const allowedFields = ['subject', 'topic', 'date', 'startTime', 'endTime', 'priority', 'status', 'notes'];
-  const suppliedFields = allowedFields.filter((field) => req.body[field] !== undefined);
   const errors = [];
+
+  if (!validateRequestBody(req.body, allowedFields, errors)) {
+    return next(createHttpError(400, 'Please correct the study session fields.', errors));
+  }
+
+  const suppliedFields = allowedFields.filter((field) => req.body[field] !== undefined);
 
   if (suppliedFields.length === 0) {
     errors.push({ field: 'studySession', message: 'Provide at least one study session field to update.' });
@@ -345,6 +447,43 @@ const validateStudySessionUpdateInput = (req, _res, next) => {
   next();
 };
 
+const validateAiRecommendationInput = (req, _res, next) => {
+  const errors = [];
+
+  if (req.body === undefined) {
+    req.body = {};
+  }
+
+  if (!validateRequestBody(req.body, ['subject', 'focusMinutes'], errors)) {
+    return next(createHttpError(400, 'Please correct the AI recommendation options.', errors));
+  }
+
+  const body = req.body;
+
+  if (body.subject !== undefined) {
+    if (typeof body.subject !== 'string' || !body.subject.trim()) {
+      errors.push({ field: 'subject', message: 'Subject must be a non-empty string.' });
+    } else if (body.subject.trim().length > 80) {
+      errors.push({ field: 'subject', message: 'Subject must not exceed 80 characters.' });
+    } else {
+      body.subject = body.subject.trim();
+    }
+  }
+
+  if (body.focusMinutes !== undefined) {
+    if (!isWholeNumber(body.focusMinutes) || body.focusMinutes < 15 || body.focusMinutes > 180) {
+      errors.push({ field: 'focusMinutes', message: 'Focus minutes must be a whole number between 15 and 180.' });
+    }
+  }
+
+  if (errors.length > 0) {
+    return next(createHttpError(400, 'Please correct the AI recommendation options.', errors));
+  }
+
+  req.body = body;
+  next();
+};
+
 export {
   validateRegisterInput,
   validateLoginInput,
@@ -354,4 +493,5 @@ export {
   validateAttendanceUpdateInput,
   validateStudySessionCreateInput,
   validateStudySessionUpdateInput,
+  validateAiRecommendationInput,
 };

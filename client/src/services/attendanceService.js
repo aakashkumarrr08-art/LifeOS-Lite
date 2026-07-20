@@ -1,7 +1,7 @@
 import api from './api.js';
 
-const getAttendanceRecords = async () => {
-  const response = await api.get('/attendance');
+const getAttendanceRecords = async (requestConfig = {}) => {
+  const response = await api.get('/attendance', requestConfig);
   return response.data;
 };
 

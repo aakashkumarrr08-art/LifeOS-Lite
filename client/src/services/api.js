@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const TOKEN_STORAGE_KEY = 'lifeos_lite_token';
+const AUTH_SESSION_EXPIRED_EVENT = 'lifeos_lite_auth_session_expired';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
@@ -40,5 +41,27 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-export { TOKEN_STORAGE_KEY, getStoredToken, setStoredToken, clearStoredToken };
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (
+      error.response?.status === 401 &&
+      getStoredToken() &&
+      typeof window !== 'undefined'
+    ) {
+      clearStoredToken();
+      window.dispatchEvent(new Event(AUTH_SESSION_EXPIRED_EVENT));
+    }
+
+    return Promise.reject(error);
+  },
+);
+
+export {
+  AUTH_SESSION_EXPIRED_EVENT,
+  TOKEN_STORAGE_KEY,
+  getStoredToken,
+  setStoredToken,
+  clearStoredToken,
+};
 export default api;

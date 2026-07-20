@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const initialFormData = {
   subject: '',
@@ -20,11 +20,6 @@ const getAttendanceFormData = (attendance) =>
 function AttendanceForm({ attendance, isSubmitting, onSubmit }) {
   const [formData, setFormData] = useState(getAttendanceFormData(attendance));
   const [errors, setErrors] = useState({});
-
-  useEffect(() => {
-    setFormData(getAttendanceFormData(attendance));
-    setErrors({});
-  }, [attendance]);
 
   const validateForm = () => {
     const nextErrors = {};

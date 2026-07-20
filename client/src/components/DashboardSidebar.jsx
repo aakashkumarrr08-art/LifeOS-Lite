@@ -7,10 +7,11 @@ const navigationItems = [
   { label: 'Task Manager', description: 'Plan and complete tasks', to: '/tasks' },
   { label: 'Attendance', description: 'Track subject eligibility', to: '/attendance' },
   { label: 'Analytics', description: 'Review progress and trends', to: '/analytics' },
+  { label: 'AI Assistant', description: 'Get tailored study guidance', to: '/ai-assistant' },
   { label: 'Profile', description: 'Student account details', to: '/profile' },
 ];
 
-const upcomingItems = ['AI Assistant'];
+const workspaceItems = ['Tasks', 'Attendance', 'Study Plans', 'Analytics'];
 
 function DashboardSidebar({ isOpen, onClose }) {
   const { logout, user } = useAuth();
@@ -72,11 +73,11 @@ function DashboardSidebar({ isOpen, onClose }) {
             </div>
           </div>
           <div className="mt-5 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm text-slate-100">
-            Productivity sprint active with a current focus streak of 6 days.
+            Keep your tasks, attendance, study plan, and analytics in one focused workspace.
           </div>
         </div>
 
-        <nav className="mt-8 space-y-2">
+        <nav aria-label="Dashboard navigation" className="mt-8 space-y-2">
           {navigationItems.map((item) => (
             <NavLink key={item.to} className={navigationLinkClass} onClick={onClose} to={item.to}>
               <p className="text-sm font-semibold">{item.label}</p>
@@ -87,10 +88,10 @@ function DashboardSidebar({ isOpen, onClose }) {
 
         <div className="mt-8 rounded-[1.5rem] border border-slate-200/70 bg-slate-50 p-5 dark:border-slate-800 dark:bg-slate-900/70">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">
-            Upcoming Modules
+            Available Modules
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
-            {upcomingItems.map((item) => (
+            {workspaceItems.map((item) => (
               <span
                 key={item}
                 className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300"

@@ -1,9 +1,11 @@
 import { createContext, useEffect, useState } from 'react';
 import {
+  AUTH_SESSION_EXPIRED_EVENT,
   clearStoredToken,
   getStoredToken,
   setStoredToken,
 } from '../services/api.js';
+import { isRequestCanceled } from '../utils/apiError.js';
 import {
   getProfile as getProfileRequest,
   loginUser as loginUserRequest,
@@ -17,6 +19,8 @@ function AuthProvider({ children }) {
   const [authReady, setAuthReady] = useState(false);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const initialiseAuth = async () => {
       const storedToken = getStoredToken();
 
@@ -26,17 +30,34 @@ function AuthProvider({ children }) {
       }
 
       try {
-        const response = await getProfileRequest();
+        const response = await getProfileRequest({ signal: controller.signal });
         setUser(response.user);
       } catch (error) {
-        clearStoredToken();
-        setUser(null);
+        if (!isRequestCanceled(error)) {
+          clearStoredToken();
+          setUser(null);
+        }
       } finally {
-        setAuthReady(true);
+        if (!controller.signal.aborted) {
+          setAuthReady(true);
+        }
       }
     };
 
     initialiseAuth();
+
+    return () => controller.abort();
+  }, []);
+
+  useEffect(() => {
+    const handleExpiredSession = () => {
+      setUser(null);
+      setAuthReady(true);
+    };
+
+    window.addEventListener(AUTH_SESSION_EXPIRED_EVENT, handleExpiredSession);
+
+    return () => window.removeEventListener(AUTH_SESSION_EXPIRED_EVENT, handleExpiredSession);
   }, []);
 
   const register = async (payload) => {
@@ -82,4 +103,3 @@ function AuthProvider({ children }) {
 }
 
 export { AuthContext, AuthProvider };
-

@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
 
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -16,12 +18,17 @@ const userSchema = new mongoose.Schema(
       unique: true,
       trim: true,
       lowercase: true,
+      match: [emailPattern, 'Please provide a valid email address.'],
     },
     password: {
       type: String,
       required: [true, 'Password is required.'],
       minlength: [6, 'Password must be at least 6 characters long.'],
       select: false,
+      validate: {
+        validator: (password) => Buffer.byteLength(password, 'utf8') <= 72,
+        message: 'Password must not exceed 72 bytes.',
+      },
     },
   },
   {

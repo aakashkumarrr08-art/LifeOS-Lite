@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import AttendanceCard from '../components/AttendanceCard.jsx';
 import AttendanceModal from '../components/AttendanceModal.jsx';
+import useRequestLifecycle from '../hooks/useRequestLifecycle.js';
 import {
   createAttendance,
   deleteAttendance,
   getAttendanceRecords,
   updateAttendance,
 } from '../services/attendanceService.js';
+import { isRequestCanceled } from '../utils/apiError.js';
 
 const getApiErrorMessage = (error) =>
   error.response?.data?.errors?.[0]?.message ||
@@ -27,23 +29,37 @@ function AttendancePage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [actionMessage, setActionMessage] = useState('');
   const [modalError, setModalError] = useState('');
+  const { createRequestSignal, isMounted } = useRequestLifecycle();
 
-  const loadAttendanceRecords = async () => {
+  const loadAttendanceRecords = useCallback(async () => {
+    const signal = createRequestSignal();
+
     try {
       setErrorMessage('');
       setIsLoading(true);
-      const response = await getAttendanceRecords();
-      setAttendanceRecords(response.attendanceRecords);
+      const response = await getAttendanceRecords({ signal });
+
+      if (isMounted()) {
+        setAttendanceRecords(response.attendanceRecords);
+      }
     } catch (error) {
-      setErrorMessage(getApiErrorMessage(error));
+      if (isMounted() && !isRequestCanceled(error)) {
+        setErrorMessage(getApiErrorMessage(error));
+      }
     } finally {
-      setIsLoading(false);
+      if (isMounted()) {
+        setIsLoading(false);
+      }
     }
-  };
+  }, [createRequestSignal, isMounted]);
 
   useEffect(() => {
-    loadAttendanceRecords();
-  }, []);
+    const timerId = window.setTimeout(() => {
+      void loadAttendanceRecords();
+    }, 0);
+
+    return () => window.clearTimeout(timerId);
+  }, [loadAttendanceRecords]);
 
   const openCreateModal = () => {
     setSelectedAttendance(null);

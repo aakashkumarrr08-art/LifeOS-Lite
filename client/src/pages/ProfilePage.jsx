@@ -20,7 +20,7 @@ function ProfilePage() {
       setIsRefreshing(true);
       await refreshProfile();
       setRefreshMessage('Profile refreshed successfully.');
-    } catch (error) {
+    } catch {
       setRefreshMessage('Unable to refresh profile right now.');
     } finally {
       setIsRefreshing(false);

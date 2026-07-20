@@ -7,6 +7,7 @@ const attendanceSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
       index: true,
+      immutable: true,
     },
     subject: {
       type: String,

@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import AnalyticsCard from '../components/AnalyticsCard.jsx';
 import AttendanceChart from '../components/AttendanceChart.jsx';
 import ProgressChart from '../components/ProgressChart.jsx';
 import StatisticsCard from '../components/StatisticsCard.jsx';
 import TaskChart from '../components/TaskChart.jsx';
+import useRequestLifecycle from '../hooks/useRequestLifecycle.js';
 import { getAnalyticsData } from '../services/analyticsService.js';
+import { isRequestCanceled } from '../utils/apiError.js';
 
 const getApiErrorMessage = (error) =>
   error.response?.data?.message || 'Unable to load analytics right now.';
@@ -48,23 +50,37 @@ function AnalyticsPage() {
   const [analyticsData, setAnalyticsData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
+  const { createRequestSignal, isMounted } = useRequestLifecycle();
 
-  const loadAnalytics = async () => {
+  const loadAnalytics = useCallback(async () => {
+    const signal = createRequestSignal();
+
     try {
       setErrorMessage('');
       setIsLoading(true);
-      const response = await getAnalyticsData();
-      setAnalyticsData(response.data);
+      const response = await getAnalyticsData({ signal });
+
+      if (isMounted()) {
+        setAnalyticsData(response.data);
+      }
     } catch (error) {
-      setErrorMessage(getApiErrorMessage(error));
+      if (isMounted() && !isRequestCanceled(error)) {
+        setErrorMessage(getApiErrorMessage(error));
+      }
     } finally {
-      setIsLoading(false);
+      if (isMounted()) {
+        setIsLoading(false);
+      }
     }
-  };
+  }, [createRequestSignal, isMounted]);
 
   useEffect(() => {
-    loadAnalytics();
-  }, []);
+    const timerId = window.setTimeout(() => {
+      void loadAnalytics();
+    }, 0);
+
+    return () => window.clearTimeout(timerId);
+  }, [loadAnalytics]);
 
   if (isLoading) {
     return (

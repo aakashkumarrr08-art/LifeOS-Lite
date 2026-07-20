@@ -52,7 +52,7 @@ function TaskCard({ task, onComplete, onDelete, onEdit }) {
 
       <div className="mt-6 flex flex-wrap gap-3 border-t border-slate-200/70 pt-5 dark:border-slate-800">
         {!isCompleted ? (
-          <button className="primary-button px-4 py-2" onClick={() => onComplete(task)} type="button">
+          <button aria-label={`Mark ${task.title} as completed`} className="primary-button px-4 py-2" onClick={() => onComplete(task)} type="button">
             Mark Complete
           </button>
         ) : (
@@ -60,11 +60,12 @@ function TaskCard({ task, onComplete, onDelete, onEdit }) {
             Completed
           </span>
         )}
-        <button className="secondary-button px-4 py-2" onClick={() => onEdit(task)} type="button">
+        <button aria-label={`Edit ${task.title}`} className="secondary-button px-4 py-2" onClick={() => onEdit(task)} type="button">
           Edit
         </button>
         <button
           className="secondary-button border-rose-500/20 px-4 py-2 text-rose-600 hover:border-rose-500/30 hover:bg-rose-500/10 dark:text-rose-300"
+          aria-label={`Delete ${task.title}`}
           onClick={() => onDelete(task)}
           type="button"
         >
@@ -76,4 +77,3 @@ function TaskCard({ task, onComplete, onDelete, onEdit }) {
 }
 
 export default TaskCard;
-

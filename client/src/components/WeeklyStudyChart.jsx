@@ -79,8 +79,7 @@ function WeeklyStudyChart({ data }) {
     };
   }, [data, isDarkMode]);
 
-  return <canvas className="h-full w-full" ref={canvasRef} />;
+  return <canvas aria-label="Weekly completed study hours" className="h-full w-full" ref={canvasRef} role="img" />;
 }
 
 export default WeeklyStudyChart;
-

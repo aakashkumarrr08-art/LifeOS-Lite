@@ -62,7 +62,7 @@ function TaskChart({ completedTasks, completionRate, pendingTasks, totalTasks })
       </p>
       {totalTasks > 0 ? (
         <div className="relative mt-5 h-64">
-          <canvas className="h-full w-full" ref={canvasRef} />
+          <canvas aria-label="Task completion chart" className="h-full w-full" ref={canvasRef} role="img" />
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center pb-8">
             <div className="text-center">
               <p className="text-3xl font-semibold tracking-tight text-slate-950 dark:text-white">{completionRate}%</p>

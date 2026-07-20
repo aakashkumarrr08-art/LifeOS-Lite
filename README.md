@@ -1,273 +1,107 @@
-<div align="center">
+# LifeOS Lite
 
-# 🚀 LifeOS Lite
+LifeOS Lite is a full-stack student productivity dashboard built with React, Express, MongoDB, and Mongoose. It provides authenticated task management, attendance tracking, study planning, analytics, and a transparent rule-based study assistant.
 
-### A Modern Full-Stack Student Productivity Dashboard
+## Features
 
-Built using the **MERN Stack** with secure authentication and a responsive dashboard.
+- JWT authentication with bcrypt password hashing and protected routes
+- Dashboard with live task, attendance, study, productivity, and AI insight data
+- User-scoped CRUD modules for tasks, attendance records, and study sessions
+- Analytics for weekly and monthly task progress, attendance trends, and productivity
+- Rule-based AI Study Assistant built from the authenticated user's own data
+- Responsive light and dark interface with keyboard-accessible dialogs and Chart.js charts
 
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
-![Node.js](https://img.shields.io/badge/Node.js-22-339933?logo=node.js)
-![Express.js](https://img.shields.io/badge/Express.js-000000?logo=express)
-![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb)
-![JWT](https://img.shields.io/badge/JWT-Authentication-orange)
-![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-4-06B6D4?logo=tailwindcss)
-
-</div>
-
----
-
-# 📖 About
-
-LifeOS Lite is a modern **Student Productivity Dashboard** built using the **MERN Stack**.
-
-The goal of this project is to help students manage their academic life through a clean, secure, and user-friendly web application.
-
-The project is being developed phase by phase, following real-world software development practices.
-
----
-
-# ✨ Features
-
-## ✅ Phase 1 – Project Setup
-
-- MERN Project Structure
-- MVC Backend Architecture
-- Tailwind CSS Setup
-- API Routing
-- Environment Configuration
-
----
-
-## ✅ Phase 2 – Authentication
-
-- User Registration
-- User Login
-- JWT Authentication
-- Password Hashing (bcrypt)
-- Protected Routes
-- User Profile API
-
----
-
-## ✅ Phase 3 – Dashboard
-
-- Responsive Dashboard
-- Sidebar Navigation
-- Dashboard Cards
-- Weekly Study Chart
-- Dark / Light Theme
-- Protected Dashboard API
-
----
-
-# 🛠 Tech Stack
-
-### Frontend
-
-- React
-- Vite
-- Tailwind CSS
-- React Router
-
-### Backend
-
-- Node.js
-- Express.js
-
-### Database
-
-- MongoDB
-- Mongoose
-
-### Authentication
-
-- JWT
-- bcrypt
-
----
-
-# 📂 Folder Structure
+## Project Structure
 
 ```text
-LifeOS-Lite
-│
-├── client
-│   ├── src
-│   ├── public
-│   └── package.json
-│
-├── server
-│   ├── config
-│   ├── controllers
-│   ├── middleware
-│   ├── models
-│   ├── routes
-│   └── package.json
-│
-├── .env.example
-├── README.md
-└── .gitignore
+LifeOS-Lite/
+  client/                 React + Vite + Tailwind application
+  server/                 Express API using MVC architecture
+    config/               Environment and database configuration
+    controllers/          HTTP request handlers
+    middleware/           Authentication, validation, errors, security
+    models/               Mongoose schemas
+    routes/               API route definitions
+    services/             Rule-based AI business logic
+    utils/                Shared calculations and helpers
+    tests/                Node built-in unit tests
 ```
 
----
+## Setup
 
-# ⚙️ Installation
-
-### Clone the Repository
-
-```bash
-git clone https://github.com/aakashkumarrr08-art/LifeOS-Lite.git
-```
-
-### Move into the Project
-
-```bash
-cd LifeOS-Lite
-```
-
-### Install Frontend
+1. Install dependencies.
 
 ```bash
 cd client
 npm install
-```
 
-### Install Backend
-
-```bash
 cd ../server
 npm install
 ```
 
-### Create Environment File
+2. Create the environment files from the examples.
 
-Create a file:
-
-```text
-server/.env
+```bash
+cp server/.env.example server/.env
+cp client/.env.example client/.env
 ```
 
-Example:
+3. Set a MongoDB Atlas connection string and a unique JWT secret of at least 32 characters in `server/.env`.
 
-```env
-PORT=5000
-
-MONGO_URI=your_mongodb_connection_string
-
-JWT_SECRET=your_secret_key
-
-JWT_EXPIRES_IN=7d
-```
-
-### Start Backend
+4. Start both applications in separate terminals.
 
 ```bash
 cd server
 npm run dev
 ```
 
-### Start Frontend
-
 ```bash
 cd client
 npm run dev
 ```
 
----
+The frontend runs at `http://localhost:5173` and the API runs at `http://localhost:5000` by default.
 
-# 📸 Screenshots
+## Quality Checks
 
-## 🏠 Home Page
+```bash
+cd client
+npm run lint
+npm run build
+```
 
-> Add Screenshot Here
+```bash
+cd server
+npm test
+npm audit --omit=dev --audit-level=high
+```
 
----
+## API Endpoints
 
-## 🔐 Login Page
+| Module | Method | Endpoint |
+| --- | --- | --- |
+| Health | GET | `/api/health` |
+| Auth | POST | `/api/auth/register` |
+| Auth | POST | `/api/auth/login` |
+| Auth | GET | `/api/auth/profile` |
+| Dashboard | GET | `/api/dashboard` |
+| Tasks | GET, POST | `/api/tasks` |
+| Tasks | GET, PUT, DELETE | `/api/tasks/:id` |
+| Attendance | GET, POST | `/api/attendance` |
+| Attendance | GET, PUT, DELETE | `/api/attendance/:id` |
+| Study Sessions | GET, POST | `/api/study-sessions` |
+| Study Sessions | GET, PUT, DELETE | `/api/study-sessions/:id` |
+| Analytics | GET | `/api/analytics` |
+| AI | GET | `/api/ai/dashboard-summary` |
+| AI | POST | `/api/ai/study-plan` |
+| AI | POST | `/api/ai/revision-plan` |
+| AI | POST | `/api/ai/productivity-tips` |
 
-> Add Screenshot Here
+All non-auth data endpoints require `Authorization: Bearer <token>` and only return data for the authenticated user.
 
----
+## Security Notes
 
-## 📝 Register Page
-
-> Add Screenshot Here
-
----
-
-## 📊 Dashboard
-
-> Add Screenshot Here
-
----
-
-# 📌 API Endpoints
-
-## Authentication
-
-| Method | Endpoint |
-|--------|----------|
-| POST | /api/auth/register |
-| POST | /api/auth/login |
-| GET | /api/auth/profile |
-
----
-
-## Dashboard
-
-| Method | Endpoint |
-|--------|----------|
-| GET | /api/dashboard |
-
----
-
-# 🚧 Project Roadmap
-
-| Phase | Status |
-|--------|--------|
-| Project Setup | ✅ Completed |
-| Authentication | ✅ Completed |
-| Dashboard | ✅ Completed |
-| Study Planner | 🚧 In Progress |
-| Task Manager | ⏳ Planned |
-| Attendance Tracker | ⏳ Planned |
-| Notes Module | ⏳ Planned |
-| AI Study Assistant | ⏳ Planned |
-| Deployment | ⏳ Planned |
-
----
-
-# 🎯 Future Features
-
-- 📅 Study Planner
-- ✅ Task Manager (CRUD)
-- 📚 Notes Management
-- 📊 Attendance Tracker
-- 🤖 AI Study Assistant
-- 📆 Calendar Integration
-- 🔔 Notifications
-- 📈 Analytics Dashboard
-- 👤 User Profile
-
----
-
-# 👨‍💻 Author
-
-**Aakash Kumar**
-
-B.Tech CSE Student
-
-GitHub: https://github.com/aakashkumarrr08-art
-
----
-
-# ⭐ Support
-
-If you found this project helpful, please consider giving it a **Star ⭐** on GitHub.
-
----
-
-# 📜 License
-
-This project is developed for educational and learning purposes.
+- Never commit `.env` files. They are ignored by Git; only `.env.example` files are versioned.
+- Rotate any database or JWT secret that has been shared, exposed, or committed previously.
+- The application uses security headers, request-size limits, CORS allowlisting, API throttling, input validation, and user-scoped MongoDB queries.
+- The AI assistant is deterministic and does not send academic data to an external AI provider.

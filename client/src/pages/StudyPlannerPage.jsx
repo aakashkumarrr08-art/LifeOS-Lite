@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import StudyFilter from '../components/StudyFilter.jsx';
 import StudySessionCard from '../components/StudySessionCard.jsx';
 import StudySessionModal from '../components/StudySessionModal.jsx';
 import StudySubjectCard from '../components/StudySubjectCard.jsx';
+import useRequestLifecycle from '../hooks/useRequestLifecycle.js';
 import {
   createStudySession,
   deleteStudySession,
@@ -16,6 +17,7 @@ import {
   getTodayDateKey,
   getWeekDates,
 } from '../utils/studySessionUtils.js';
+import { isRequestCanceled } from '../utils/apiError.js';
 
 const DAILY_GOAL_MINUTES = 120;
 const WEEKLY_GOAL_MINUTES = 720;
@@ -44,23 +46,37 @@ function StudyPlannerPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [actionMessage, setActionMessage] = useState('');
   const [modalError, setModalError] = useState('');
+  const { createRequestSignal, isMounted } = useRequestLifecycle();
 
-  const loadStudySessions = async () => {
+  const loadStudySessions = useCallback(async () => {
+    const signal = createRequestSignal();
+
     try {
       setErrorMessage('');
       setIsLoading(true);
-      const response = await getStudySessions();
-      setStudySessions(response.studySessions);
+      const response = await getStudySessions({ signal });
+
+      if (isMounted()) {
+        setStudySessions(response.studySessions);
+      }
     } catch (error) {
-      setErrorMessage(getApiErrorMessage(error));
+      if (isMounted() && !isRequestCanceled(error)) {
+        setErrorMessage(getApiErrorMessage(error));
+      }
     } finally {
-      setIsLoading(false);
+      if (isMounted()) {
+        setIsLoading(false);
+      }
     }
-  };
+  }, [createRequestSignal, isMounted]);
 
   useEffect(() => {
-    loadStudySessions();
-  }, []);
+    const timerId = window.setTimeout(() => {
+      void loadStudySessions();
+    }, 0);
+
+    return () => window.clearTimeout(timerId);
+  }, [loadStudySessions]);
 
   const openCreateModal = () => {
     setSelectedStudySession(null);

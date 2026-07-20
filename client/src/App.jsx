@@ -10,6 +10,7 @@ const DashboardLayout = lazy(() => import('./layouts/DashboardLayout.jsx'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage.jsx'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage.jsx'));
 const TaskPage = lazy(() => import('./pages/TaskPage.jsx'));
+const AttendancePage = lazy(() => import('./pages/AttendancePage.jsx'));
 
 function RouteFallback() {
   return (
@@ -38,6 +39,7 @@ function App() {
           <Route element={<DashboardLayout />}>
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="tasks" element={<TaskPage />} />
+          <Route path="attendance" element={<AttendancePage />} />
           <Route path="profile" element={<ProfilePage />} />
           </Route>
         </Route>

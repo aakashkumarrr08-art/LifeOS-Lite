@@ -4,6 +4,52 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const taskPriorities = ['Low', 'Medium', 'High'];
 const taskStatuses = ['Pending', 'In Progress', 'Completed'];
 
+const isWholeNumber = (value) => typeof value === 'number' && Number.isSafeInteger(value);
+
+const validateAttendanceFields = (attendance, errors, isUpdate = false) => {
+  const { subject, totalClasses, attendedClasses, minimumAttendance } = attendance;
+
+  if (!isUpdate || subject !== undefined) {
+    if (typeof subject !== 'string' || !subject.trim()) {
+      errors.push({ field: 'subject', message: 'Subject is required.' });
+    } else if (subject.trim().length > 80) {
+      errors.push({ field: 'subject', message: 'Subject must not exceed 80 characters.' });
+    } else {
+      attendance.subject = subject.trim();
+    }
+  }
+
+  if (!isUpdate || totalClasses !== undefined) {
+    if (!isWholeNumber(totalClasses) || totalClasses < 1) {
+      errors.push({ field: 'totalClasses', message: 'Total classes must be a whole number of at least 1.' });
+    }
+  }
+
+  if (!isUpdate || attendedClasses !== undefined) {
+    if (!isWholeNumber(attendedClasses) || attendedClasses < 0) {
+      errors.push({ field: 'attendedClasses', message: 'Attended classes must be a whole number of at least 0.' });
+    }
+  }
+
+  if (minimumAttendance !== undefined) {
+    if (typeof minimumAttendance !== 'number' || !Number.isFinite(minimumAttendance)) {
+      errors.push({ field: 'minimumAttendance', message: 'Minimum attendance must be a valid percentage.' });
+    } else if (minimumAttendance < 1 || minimumAttendance > 100) {
+      errors.push({ field: 'minimumAttendance', message: 'Minimum attendance must be between 1% and 100%.' });
+    }
+  }
+
+  if (
+    totalClasses !== undefined &&
+    attendedClasses !== undefined &&
+    isWholeNumber(totalClasses) &&
+    isWholeNumber(attendedClasses) &&
+    attendedClasses > totalClasses
+  ) {
+    errors.push({ field: 'attendedClasses', message: 'Attended classes cannot exceed total classes.' });
+  }
+};
+
 const validateRegisterInput = (req, _res, next) => {
   const { name, email, password } = req.body;
   const errors = [];
@@ -162,9 +208,41 @@ const validateTaskUpdateInput = (req, _res, next) => {
   next();
 };
 
+const validateAttendanceCreateInput = (req, _res, next) => {
+  const errors = [];
+
+  validateAttendanceFields(req.body, errors);
+
+  if (errors.length > 0) {
+    return next(createHttpError(400, 'Please correct the attendance fields.', errors));
+  }
+
+  next();
+};
+
+const validateAttendanceUpdateInput = (req, _res, next) => {
+  const allowedFields = ['subject', 'totalClasses', 'attendedClasses', 'minimumAttendance'];
+  const suppliedFields = allowedFields.filter((field) => req.body[field] !== undefined);
+  const errors = [];
+
+  if (suppliedFields.length === 0) {
+    errors.push({ field: 'attendance', message: 'Provide at least one attendance field to update.' });
+  }
+
+  validateAttendanceFields(req.body, errors, true);
+
+  if (errors.length > 0) {
+    return next(createHttpError(400, 'Please correct the attendance fields.', errors));
+  }
+
+  next();
+};
+
 export {
   validateRegisterInput,
   validateLoginInput,
   validateTaskCreateInput,
   validateTaskUpdateInput,
+  validateAttendanceCreateInput,
+  validateAttendanceUpdateInput,
 };

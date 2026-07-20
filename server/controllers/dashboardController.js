@@ -1,5 +1,10 @@
+import Attendance from '../models/Attendance.js';
 import Task from '../models/Task.js';
 import asyncHandler from '../utils/asyncHandler.js';
+import {
+  calculateAttendancePercentage,
+  formatAttendanceRecord,
+} from '../utils/attendanceMetrics.js';
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const UPCOMING_EXAM_DATE = new Date('2026-08-18T09:00:00.000Z');
@@ -18,7 +23,7 @@ const getDashboardData = asyncHandler(async (req, res) => {
   );
   const taskQuery = { userId: req.user._id };
 
-  const [totalTasks, completedTasks, pendingTasks, upcomingDeadlines, todayTasks] = await Promise.all([
+  const [totalTasks, completedTasks, pendingTasks, upcomingDeadlines, todayTasks, attendanceRecords] = await Promise.all([
     Task.countDocuments(taskQuery),
     Task.countDocuments({ ...taskQuery, status: 'Completed' }),
     Task.countDocuments({ ...taskQuery, status: 'Pending' }),
@@ -33,8 +38,25 @@ const getDashboardData = asyncHandler(async (req, res) => {
     })
       .sort({ dueDate: 1, createdAt: -1 })
       .limit(4),
+    Attendance.find(taskQuery).sort({ subject: 1, createdAt: -1 }),
   ]);
   const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+  const attendanceWithMetrics = attendanceRecords.map(formatAttendanceRecord);
+  const totalAttendanceClasses = attendanceWithMetrics.reduce(
+    (total, record) => total + record.totalClasses,
+    0,
+  );
+  const totalAttendedClasses = attendanceWithMetrics.reduce(
+    (total, record) => total + record.attendedClasses,
+    0,
+  );
+  const attendancePercentage = calculateAttendancePercentage(totalAttendedClasses, totalAttendanceClasses);
+  const atRiskRecords = attendanceWithMetrics.filter((record) => record.isBelowMinimum);
+  const belowSeventyFiveRecords = attendanceWithMetrics.filter((record) => record.percentage < 75);
+  const classesNeeded = atRiskRecords.reduce(
+    (total, record) => total + (record.classesNeeded || 0),
+    0,
+  );
 
   res.status(200).json({
     success: true,
@@ -91,11 +113,21 @@ const getDashboardData = asyncHandler(async (req, res) => {
         currentStreak: 6,
       },
       attendance: {
-        percentage: 91,
-        attendedClasses: 64,
-        totalClasses: 70,
-        missedClasses: 6,
-        status: 'Safe Zone',
+        hasRecords: attendanceWithMetrics.length > 0,
+        percentage: attendancePercentage,
+        attendedClasses: totalAttendedClasses,
+        totalClasses: totalAttendanceClasses,
+        missedClasses: totalAttendanceClasses - totalAttendedClasses,
+        subjectCount: attendanceWithMetrics.length,
+        atRiskSubjects: atRiskRecords.length,
+        belowSeventyFiveSubjects: belowSeventyFiveRecords.length,
+        classesNeeded,
+        status:
+          attendanceWithMetrics.length === 0
+            ? 'No Records'
+            : attendancePercentage >= 75
+              ? 'Safe Zone'
+              : 'Needs Attention',
       },
       upcomingExam: {
         title: 'Database Systems Semester Exam',

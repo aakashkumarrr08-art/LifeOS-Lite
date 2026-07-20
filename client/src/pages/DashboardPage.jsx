@@ -102,6 +102,10 @@ function DashboardPage() {
     dateStyle: 'medium',
     timeStyle: 'short',
   }).format(new Date(upcomingExam.date));
+  const attendanceIsAtRisk = attendance.hasRecords && attendance.percentage < 75;
+  const attendanceProgressClass = attendanceIsAtRisk
+    ? 'bg-gradient-to-r from-rose-500 via-red-500 to-orange-400'
+    : 'bg-gradient-to-r from-emerald-500 via-lime-500 to-cyan-500';
 
   return (
     <section className="space-y-6">
@@ -190,6 +194,29 @@ function DashboardPage() {
             </div>
           </article>
         ))}
+      </div>
+
+      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="dashboard-panel">
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Overall Attendance</p>
+          <p className={`mt-4 text-4xl font-semibold tracking-tight ${attendanceIsAtRisk ? 'text-rose-600 dark:text-rose-300' : 'text-emerald-600 dark:text-emerald-300'}`}>
+            {attendance.hasRecords ? `${attendance.percentage}%` : 'No data'}
+          </p>
+        </div>
+        <div className="dashboard-panel">
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Subjects Tracked</p>
+          <p className="mt-4 text-4xl font-semibold tracking-tight text-slate-950 dark:text-white">{attendance.subjectCount}</p>
+        </div>
+        <div className="dashboard-panel">
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Below 75%</p>
+          <p className={`mt-4 text-4xl font-semibold tracking-tight ${attendance.belowSeventyFiveSubjects > 0 ? 'text-rose-600 dark:text-rose-300' : 'text-emerald-600 dark:text-emerald-300'}`}>
+            {attendance.belowSeventyFiveSubjects}
+          </p>
+        </div>
+        <div className="dashboard-panel">
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Classes Needed</p>
+          <p className="mt-4 text-4xl font-semibold tracking-tight text-cyan-600 dark:text-cyan-300">{attendance.classesNeeded}</p>
+        </div>
       </div>
 
       <div className="grid gap-6 2xl:grid-cols-[1.2fr_0.8fr]">
@@ -327,11 +354,11 @@ function DashboardPage() {
               Attendance Card
             </p>
             <h3 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
-              {attendance.percentage}% semester attendance
+              {attendance.hasRecords ? `${attendance.percentage}% semester attendance` : 'Start tracking attendance'}
             </h3>
             <div className="mt-6 h-3 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-emerald-500 via-lime-500 to-cyan-500"
+                className={`h-full rounded-full ${attendanceProgressClass}`}
                 style={{ width: `${attendance.percentage}%` }}
               />
             </div>
@@ -350,11 +377,14 @@ function DashboardPage() {
               </div>
               <div>
                 <p className="text-sm text-slate-500 dark:text-slate-400">Status</p>
-                <p className="mt-1 text-xl font-semibold text-slate-950 dark:text-white">
+                <p className={`mt-1 text-xl font-semibold ${attendanceIsAtRisk ? 'text-rose-600 dark:text-rose-300' : 'text-slate-950 dark:text-white'}`}>
                   {attendance.status}
                 </p>
               </div>
             </div>
+            <Link className="secondary-button mt-6" to="/attendance">
+              Manage Attendance
+            </Link>
           </div>
 
           <div className="dashboard-panel">
@@ -395,6 +425,9 @@ function DashboardPage() {
               </Link>
               <Link className="secondary-button w-full justify-center" to="/tasks">
                 Open Task Manager
+              </Link>
+              <Link className="secondary-button w-full justify-center" to="/attendance">
+                Open Attendance
               </Link>
               <button className="secondary-button w-full justify-center" onClick={handleLogout} type="button">
                 Logout

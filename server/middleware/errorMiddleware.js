@@ -8,7 +8,10 @@ const errorHandler = (error, _req, res, _next) => {
   if (error.code === 11000) {
     res.status(409).json({
       success: false,
-      message: 'An account with this email already exists.',
+      message:
+        Object.keys(error.keyPattern || {}).includes('email')
+          ? 'An account with this email already exists.'
+          : 'A record with this value already exists.',
     });
     return;
   }
@@ -17,6 +20,26 @@ const errorHandler = (error, _req, res, _next) => {
     res.status(401).json({
       success: false,
       message: 'Your session is invalid or has expired. Please log in again.',
+    });
+    return;
+  }
+
+  if (error.name === 'ValidationError') {
+    res.status(400).json({
+      success: false,
+      message: 'Please correct the invalid fields.',
+      errors: Object.values(error.errors).map((validationError) => ({
+        field: validationError.path,
+        message: validationError.message,
+      })),
+    });
+    return;
+  }
+
+  if (error.name === 'CastError') {
+    res.status(400).json({
+      success: false,
+      message: `Invalid ${error.path}.`,
     });
     return;
   }

@@ -5,10 +5,12 @@ import createHttpError from '../utils/createHttpError.js';
 import generateToken from '../utils/generateToken.js';
 
 const ensureDatabaseConnection = () => {
+  console.log("Mongoose readyState =", mongoose.connection.readyState);
+
   if (mongoose.connection.readyState !== 1) {
     throw createHttpError(
       503,
-      'Database connection is not ready. Configure MongoDB and restart the server.',
+      `Database connection is not ready. readyState=${mongoose.connection.readyState}`,
     );
   }
 };

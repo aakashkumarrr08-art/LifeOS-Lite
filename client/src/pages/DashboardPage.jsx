@@ -19,6 +19,11 @@ const priorityClasses = {
   Low: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-300',
 };
 
+const formatTaskDueDate = (dueDate) =>
+  new Intl.DateTimeFormat('en-IN', {
+    dateStyle: 'medium',
+  }).format(new Date(dueDate));
+
 const getApiErrorMessage = (error) =>
   error.response?.data?.message || 'Unable to load dashboard data right now.';
 
@@ -105,7 +110,7 @@ function DashboardPage() {
           <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-2xl space-y-5">
               <span className="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.32em] text-cyan-200">
-                Phase 3 Dashboard
+                Live Task Insights
               </span>
               <div className="space-y-4">
                 <h2 className="text-4xl font-semibold tracking-tight">
@@ -273,7 +278,7 @@ function DashboardPage() {
                 Today&apos;s Tasks Card
               </p>
               <h3 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
-                Priority task queue
+                Tasks due today
               </h3>
             </div>
             <span className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-600 dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-300">
@@ -282,7 +287,7 @@ function DashboardPage() {
           </div>
 
           <div className="mt-6 space-y-4">
-            {todayTasks.map((task) => (
+            {todayTasks.length > 0 ? todayTasks.map((task) => (
               <div
                 className="rounded-2xl border border-slate-200/70 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900/70"
                 key={task.id}
@@ -292,10 +297,10 @@ function DashboardPage() {
                     <p className="text-lg font-semibold text-slate-950 dark:text-white">{task.title}</p>
                     <div className="mt-2 flex flex-wrap gap-2 text-xs font-medium">
                       <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-slate-600 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300">
-                        {task.time}
+                        Due {formatTaskDueDate(task.dueDate)}
                       </span>
                       <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-slate-600 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300">
-                        {task.category}
+                        {task.subject}
                       </span>
                     </div>
                   </div>
@@ -308,7 +313,11 @@ function DashboardPage() {
                   </span>
                 </div>
               </div>
-            ))}
+            )) : (
+              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-sm leading-6 text-slate-600 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-300">
+                No tasks are due today. Create a task to begin tracking your study workload.
+              </div>
+            )}
           </div>
         </div>
 
@@ -384,6 +393,9 @@ function DashboardPage() {
               <Link className="secondary-button w-full justify-center" to="/profile">
                 Open Profile
               </Link>
+              <Link className="secondary-button w-full justify-center" to="/tasks">
+                Open Task Manager
+              </Link>
               <button className="secondary-button w-full justify-center" onClick={handleLogout} type="button">
                 Logout
               </button>
@@ -408,4 +420,3 @@ function DashboardPage() {
 }
 
 export default DashboardPage;
-

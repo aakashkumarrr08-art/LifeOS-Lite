@@ -3,10 +3,11 @@ import useAuth from '../hooks/useAuth.js';
 
 const navigationItems = [
   { label: 'Dashboard', description: 'Overview and insights', to: '/dashboard' },
+  { label: 'Task Manager', description: 'Plan and complete tasks', to: '/tasks' },
   { label: 'Profile', description: 'Student account details', to: '/profile' },
 ];
 
-const upcomingItems = ['Study Planner', 'Task Manager', 'Attendance', 'Analytics'];
+const upcomingItems = ['Study Planner', 'Attendance', 'Analytics'];
 
 function DashboardSidebar({ isOpen, onClose }) {
   const { logout, user } = useAuth();
@@ -110,4 +111,3 @@ function DashboardSidebar({ isOpen, onClose }) {
 }
 
 export default DashboardSidebar;
-

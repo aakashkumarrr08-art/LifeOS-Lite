@@ -9,6 +9,7 @@ import RegisterPage from './pages/RegisterPage.jsx';
 const DashboardLayout = lazy(() => import('./layouts/DashboardLayout.jsx'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage.jsx'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage.jsx'));
+const TaskPage = lazy(() => import('./pages/TaskPage.jsx'));
 
 function RouteFallback() {
   return (
@@ -35,8 +36,9 @@ function App() {
 
         <Route element={<ProtectedRoute />}>
           <Route element={<DashboardLayout />}>
-            <Route path="dashboard" element={<DashboardPage />} />
-            <Route path="profile" element={<ProfilePage />} />
+          <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="tasks" element={<TaskPage />} />
+          <Route path="profile" element={<ProfilePage />} />
           </Route>
         </Route>
 

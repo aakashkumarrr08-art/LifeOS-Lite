@@ -1,12 +1,40 @@
+import Task from '../models/Task.js';
+import asyncHandler from '../utils/asyncHandler.js';
+
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const UPCOMING_EXAM_DATE = new Date('2026-08-18T09:00:00.000Z');
 
-const getDashboardData = (req, res) => {
+const getDashboardData = asyncHandler(async (req, res) => {
   const now = new Date();
+  const startOfToday = new Date(now);
+  startOfToday.setHours(0, 0, 0, 0);
+  const endOfToday = new Date(startOfToday);
+  endOfToday.setDate(endOfToday.getDate() + 1);
+  const upcomingDeadlineLimit = new Date(startOfToday);
+  upcomingDeadlineLimit.setDate(upcomingDeadlineLimit.getDate() + 7);
   const daysRemaining = Math.max(
     Math.ceil((UPCOMING_EXAM_DATE.getTime() - now.getTime()) / MS_PER_DAY),
     0,
   );
+  const taskQuery = { userId: req.user._id };
+
+  const [totalTasks, completedTasks, pendingTasks, upcomingDeadlines, todayTasks] = await Promise.all([
+    Task.countDocuments(taskQuery),
+    Task.countDocuments({ ...taskQuery, status: 'Completed' }),
+    Task.countDocuments({ ...taskQuery, status: 'Pending' }),
+    Task.countDocuments({
+      ...taskQuery,
+      status: { $ne: 'Completed' },
+      dueDate: { $gte: startOfToday, $lte: upcomingDeadlineLimit },
+    }),
+    Task.find({
+      ...taskQuery,
+      dueDate: { $gte: startOfToday, $lt: endOfToday },
+    })
+      .sort({ dueDate: 1, createdAt: -1 })
+      .limit(4),
+  ]);
+  const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   res.status(200).json({
     success: true,
@@ -19,64 +47,42 @@ const getDashboardData = (req, res) => {
       },
       stats: [
         {
-          id: 'todayTasks',
-          label: "Today's Tasks",
-          value: 7,
-          change: '+2 from yesterday',
+          id: 'totalTasks',
+          label: 'Total Tasks',
+          value: totalTasks,
+          change: `${completionRate}% completion rate`,
           accent: 'cyan',
         },
         {
           id: 'completedTasks',
           label: 'Completed Tasks',
-          value: 4,
-          change: '57% completion rate',
+          value: completedTasks,
+          change: 'Finished across all subjects',
           accent: 'emerald',
         },
         {
-          id: 'attendance',
-          label: 'Attendance',
-          value: '91%',
-          change: 'Above semester target',
+          id: 'pendingTasks',
+          label: 'Pending Tasks',
+          value: pendingTasks,
+          change: 'Ready for your next focus block',
           accent: 'amber',
         },
         {
-          id: 'studyHours',
-          label: 'Study Hours',
-          value: '5.5h',
-          change: '1.2h deep work today',
+          id: 'upcomingDeadlines',
+          label: 'Upcoming Deadlines',
+          value: upcomingDeadlines,
+          change: 'Due within the next 7 days',
           accent: 'violet',
         },
       ],
-      todayTasks: [
-        {
-          id: 'task-1',
-          title: 'Complete operating systems revision quiz',
-          time: '08:30 AM',
-          category: 'Revision',
-          priority: 'High',
-        },
-        {
-          id: 'task-2',
-          title: 'Submit database normalization assignment',
-          time: '11:00 AM',
-          category: 'Assignment',
-          priority: 'High',
-        },
-        {
-          id: 'task-3',
-          title: 'Attend compiler design lecture',
-          time: '01:30 PM',
-          category: 'Lecture',
-          priority: 'Medium',
-        },
-        {
-          id: 'task-4',
-          title: 'Review networking flashcards',
-          time: '06:00 PM',
-          category: 'Self Study',
-          priority: 'Low',
-        },
-      ],
+      todayTasks: todayTasks.map((task) => ({
+        id: task.id,
+        title: task.title,
+        subject: task.subject,
+        priority: task.priority,
+        status: task.status,
+        dueDate: task.dueDate,
+      })),
       studyProgress: {
         completedPercentage: 72,
         weeklyGoalHours: 24,
@@ -115,7 +121,6 @@ const getDashboardData = (req, res) => {
       ],
     },
   });
-};
+});
 
 export { getDashboardData };
-

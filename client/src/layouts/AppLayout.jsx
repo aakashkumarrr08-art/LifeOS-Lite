@@ -25,7 +25,7 @@ function AppLayout() {
               <h1 className="text-2xl font-bold tracking-tight">LifeOS Lite</h1>
             </div>
             <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-300 lg:hidden">
-              Phase 3 Dashboard
+              Phase 4 Tasks
             </span>
           </div>
 
@@ -57,7 +57,7 @@ function AppLayout() {
 
             <div className="flex flex-wrap items-center gap-3">
               <span className="hidden rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-300 lg:inline-flex">
-                Phase 3 Dashboard
+                Phase 4 Tasks
               </span>
               <ThemeToggleButton />
               {authReady && isAuthenticated ? (

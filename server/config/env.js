@@ -14,6 +14,8 @@ const isPlaceholderSecret = (value) =>
 const config = {
   clientOrigins: parseOrigins(process.env.CLIENT_URL),
   environment: process.env.NODE_ENV || 'development',
+  geminiApiKey: process.env.GEMINI_API_KEY,
+  geminiModel: process.env.GEMINI_MODEL || 'gemini-3.1-flash-lite',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   jwtSecret: process.env.JWT_SECRET,
   mongoUri: process.env.MONGO_URI,

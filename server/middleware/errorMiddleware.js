@@ -53,7 +53,10 @@ const errorHandler = (error, _req, res, _next) => {
 
   res.status(statusCode).json({
     success: false,
-    message: isServerError ? 'Internal server error.' : error.message || 'Request failed.',
+    message:
+      isServerError && !error.exposeMessage
+        ? 'Internal server error.'
+        : error.message || 'Request failed.',
     errors:
       !isServerError && Array.isArray(error.errors) && error.errors.length > 0
         ? error.errors

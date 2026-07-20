@@ -6,6 +6,10 @@ const dateOnlyPattern = /^\d{4}-\d{2}-\d{2}$/;
 const taskPriorities = ['Low', 'Medium', 'High'];
 const taskStatuses = ['Pending', 'In Progress', 'Completed'];
 const studySessionStatuses = ['Pending', 'Completed'];
+const chatMessageRoles = ['user', 'assistant'];
+const MAX_CHAT_HISTORY_ITEMS = 12;
+const MAX_CHAT_MESSAGE_LENGTH = 6000;
+const MAX_CHAT_HISTORY_CHARACTERS = 12000;
 
 const isWholeNumber = (value) => typeof value === 'number' && Number.isSafeInteger(value);
 
@@ -484,6 +488,91 @@ const validateAiRecommendationInput = (req, _res, next) => {
   next();
 };
 
+const validateAiChatInput = (req, _res, next) => {
+  const errors = [];
+
+  if (!validateRequestBody(req.body, ['message', 'history'], errors)) {
+    return next(createHttpError(400, 'Please correct the AI chat message.', errors));
+  }
+
+  const { history = [], message } = req.body;
+
+  if (typeof message !== 'string' || !message.trim()) {
+    errors.push({ field: 'message', message: 'Enter a message before sending it.' });
+  } else if (message.trim().length > MAX_CHAT_MESSAGE_LENGTH) {
+    errors.push({
+      field: 'message',
+      message: `Message must not exceed ${MAX_CHAT_MESSAGE_LENGTH} characters.`,
+    });
+  }
+
+  if (!Array.isArray(history)) {
+    errors.push({ field: 'history', message: 'Chat history must be an array.' });
+  } else if (history.length > MAX_CHAT_HISTORY_ITEMS) {
+    errors.push({
+      field: 'history',
+      message: `Chat history cannot contain more than ${MAX_CHAT_HISTORY_ITEMS} messages.`,
+    });
+  }
+
+  const normalizedHistory = [];
+
+  if (Array.isArray(history)) {
+    history.forEach((entry, index) => {
+      if (!entry || typeof entry !== 'object' || Array.isArray(entry)) {
+        errors.push({ field: `history.${index}`, message: 'Each chat message must be an object.' });
+        return;
+      }
+
+      if (!chatMessageRoles.includes(entry.role)) {
+        errors.push({
+          field: `history.${index}.role`,
+          message: 'Chat history role must be user or assistant.',
+        });
+      }
+
+      if (typeof entry.content !== 'string' || !entry.content.trim()) {
+        errors.push({
+          field: `history.${index}.content`,
+          message: 'Chat history content must be a non-empty string.',
+        });
+      } else if (entry.content.trim().length > MAX_CHAT_MESSAGE_LENGTH) {
+        errors.push({
+          field: `history.${index}.content`,
+          message: `Chat history content must not exceed ${MAX_CHAT_MESSAGE_LENGTH} characters.`,
+        });
+      } else {
+        normalizedHistory.push({
+          content: entry.content.trim(),
+          role: entry.role,
+        });
+      }
+    });
+  }
+
+  const historyCharacterCount = normalizedHistory.reduce(
+    (total, entry) => total + entry.content.length,
+    0,
+  );
+
+  if (historyCharacterCount > MAX_CHAT_HISTORY_CHARACTERS) {
+    errors.push({
+      field: 'history',
+      message: `Chat history must not exceed ${MAX_CHAT_HISTORY_CHARACTERS} characters.`,
+    });
+  }
+
+  if (errors.length > 0) {
+    return next(createHttpError(400, 'Please correct the AI chat message.', errors));
+  }
+
+  req.body = {
+    history: normalizedHistory,
+    message: message.trim(),
+  };
+  next();
+};
+
 export {
   validateRegisterInput,
   validateLoginInput,
@@ -494,4 +583,5 @@ export {
   validateStudySessionCreateInput,
   validateStudySessionUpdateInput,
   validateAiRecommendationInput,
+  validateAiChatInput,
 };

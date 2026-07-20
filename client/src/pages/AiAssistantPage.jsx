@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import AskAnythingChat from '../components/AskAnythingChat.jsx';
 import AiSummary from '../components/AiSummary.jsx';
 import AttendanceAlerts from '../components/AttendanceAlerts.jsx';
 import ProductivityTips from '../components/ProductivityTips.jsx';
@@ -136,6 +137,8 @@ function AiAssistantPage() {
       </div>
 
       <WeeklyRecommendations weeklyRecommendations={assistantData.productivityTips.weeklyRecommendations} />
+
+      <AskAnythingChat />
     </section>
   );
 }

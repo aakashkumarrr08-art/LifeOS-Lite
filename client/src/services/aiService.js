@@ -20,9 +20,15 @@ const createAiProductivityTips = async (requestConfig = {}) => {
   return response.data;
 };
 
+const sendAiChat = async (payload, requestConfig = {}) => {
+  const response = await api.post('/ai/chat', payload, requestConfig);
+  return response.data;
+};
+
 export {
   createAiProductivityTips,
   createAiRevisionPlan,
   createAiStudyPlan,
   getAiDashboardSummary,
+  sendAiChat,
 };

@@ -211,18 +211,16 @@ function StudyPlannerPage() {
 
   return (
     <section className="space-y-6">
-      <div className="overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-900 p-8 text-white shadow-soft">
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+      <div className="page-hero">
+        <div className="page-hero-content">
           <div className="max-w-2xl space-y-4">
-            <span className="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-cyan-200">
-              Phase 7 Study Planner
-            </span>
-            <h2 className="text-4xl font-semibold tracking-tight">Turn your study intentions into a schedule you can complete.</h2>
-            <p className="text-base leading-7 text-slate-200">
+            <span className="page-eyebrow">Study planner</span>
+            <h2 className="page-title">Turn your study intentions into a schedule you can complete.</h2>
+            <p className="page-description">
               Plan focused sessions by subject, keep your daily and weekly goals visible, and build a reliable revision rhythm.
             </p>
           </div>
-          <button className="primary-button justify-center border border-white/10 bg-white text-slate-950 hover:bg-slate-100 dark:bg-white dark:text-slate-950" onClick={openCreateModal} type="button">
+          <button className="primary-button w-full border border-white/10 bg-white text-slate-950 hover:bg-slate-100 sm:w-auto dark:bg-white dark:text-slate-950" onClick={openCreateModal} type="button">
             Add Study Session
           </button>
         </div>
@@ -248,7 +246,7 @@ function StudyPlannerPage() {
         </div>
         <div className="dashboard-panel">
           <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Upcoming Session</p>
-          <p className="mt-4 truncate text-xl font-semibold tracking-tight text-slate-950 dark:text-white">
+          <p className="mt-4 break-words text-xl font-semibold tracking-tight text-slate-950 dark:text-white">
             {upcomingSessions[0]?.topic || 'None planned'}
           </p>
           <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">

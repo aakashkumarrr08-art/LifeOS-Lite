@@ -94,7 +94,7 @@ function LoginPage() {
   return (
     <AuthPageShell
       badge="Secure Login"
-      description="Sign in to access your protected student dashboard and track your study metrics in one place."
+      description="Sign in to your personal workspace and keep your study goals, tasks, and progress in one place."
       footerLabel="Need an account?"
       footerLinkText="Create one here"
       footerTo="/register"
@@ -106,7 +106,7 @@ function LoginPage() {
             Sign In
           </h1>
           <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
-            Use your email and password to continue to the protected dashboard.
+            Use your email and password to continue to your workspace.
           </p>
         </div>
 

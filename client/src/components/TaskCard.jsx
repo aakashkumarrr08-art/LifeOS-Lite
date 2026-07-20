@@ -17,16 +17,16 @@ function TaskCard({ task, onComplete, onDelete, onEdit }) {
   const isCompleted = task.status === 'Completed';
 
   return (
-    <article className="rounded-[1.5rem] border border-slate-200/70 bg-white p-5 shadow-soft transition duration-200 hover:-translate-y-0.5 dark:border-slate-800 dark:bg-slate-900">
+    <article className="min-w-0 overflow-hidden rounded-[1.5rem] border border-slate-200/70 bg-white p-4 shadow-soft transition duration-200 hover:-translate-y-0.5 sm:p-5 dark:border-slate-800 dark:bg-slate-900">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <p className="text-lg font-semibold text-slate-950 dark:text-white">{task.title}</p>
+          <p className="break-words text-lg font-semibold leading-7 text-slate-950 dark:text-white">{task.title}</p>
           {task.description ? (
             <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{task.description}</p>
           ) : null}
         </div>
         <span
-          className={`w-fit rounded-full border px-3 py-1 text-xs font-semibold ${
+          className={`w-fit max-w-full shrink-0 rounded-full border px-3 py-1 text-xs font-semibold ${
             statusClasses[task.status] || statusClasses.Pending
           }`}
         >
@@ -35,7 +35,7 @@ function TaskCard({ task, onComplete, onDelete, onEdit }) {
       </div>
 
       <div className="mt-5 flex flex-wrap gap-2 text-xs font-medium">
-        <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-slate-600 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300">
+        <span className="max-w-full break-words rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-slate-600 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300">
           {task.subject}
         </span>
         <span

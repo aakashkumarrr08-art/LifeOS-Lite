@@ -10,14 +10,14 @@ function StudySessionCard({ onComplete, onDelete, onEdit, studySession }) {
   const isCompleted = studySession.status === 'Completed';
 
   return (
-    <article className="rounded-[1.5rem] border border-slate-200/70 bg-white p-5 shadow-soft transition duration-200 hover:-translate-y-0.5 dark:border-slate-800 dark:bg-slate-900">
+    <article className="min-w-0 overflow-hidden rounded-[1.5rem] border border-slate-200/70 bg-white p-4 shadow-soft transition duration-200 hover:-translate-y-0.5 sm:p-5 dark:border-slate-800 dark:bg-slate-900">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <p className="text-lg font-semibold text-slate-950 dark:text-white">{studySession.topic}</p>
+          <p className="break-words text-lg font-semibold leading-7 text-slate-950 dark:text-white">{studySession.topic}</p>
           <p className="mt-2 text-sm font-medium text-cyan-700 dark:text-cyan-300">{studySession.subject}</p>
         </div>
         <span
-          className={`w-fit rounded-full border px-3 py-1 text-xs font-semibold ${
+          className={`w-fit max-w-full shrink-0 rounded-full border px-3 py-1 text-xs font-semibold ${
             isCompleted
               ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-300'
               : 'border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200'
@@ -28,7 +28,7 @@ function StudySessionCard({ onComplete, onDelete, onEdit, studySession }) {
       </div>
 
       <div className="mt-5 flex flex-wrap gap-2 text-xs font-medium">
-        <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-slate-600 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300">
+        <span className="max-w-full break-words rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-slate-600 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300">
           {formatStudyDate(studySession.date)}
         </span>
         <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-slate-600 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300">

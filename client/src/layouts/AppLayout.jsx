@@ -18,22 +18,19 @@ function AppLayout() {
       <a className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:text-slate-950" href="#main-content">
         Skip to main content
       </a>
-      <header className="border-b border-slate-200/70 bg-white/75 backdrop-blur dark:border-slate-800 dark:bg-slate-950/80">
-        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-6 py-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-cyan-600 dark:text-cyan-400">
-                Semester Project
+      <header className="border-b border-slate-200/70 bg-white/80 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/85">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex min-w-0 items-center justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-cyan-600 dark:text-cyan-400">
+                Student productivity
               </p>
-              <h1 className="text-2xl font-bold tracking-tight">LifeOS Lite</h1>
+              <h1 className="text-xl font-bold tracking-tight sm:text-2xl">LifeOS Lite</h1>
             </div>
-            <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-300 lg:hidden">
-              All Modules Active
-            </span>
           </div>
 
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-end">
-            <nav className="flex flex-wrap gap-2">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-end">
+            <nav aria-label="Primary navigation" className="flex flex-wrap gap-2">
               <NavLink className={navigationLinkClass} to="/">
                 Home
               </NavLink>
@@ -58,14 +55,11 @@ function AppLayout() {
               )}
             </nav>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="hidden rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-300 lg:inline-flex">
-                All Modules Active
-              </span>
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <ThemeToggleButton />
               {authReady && isAuthenticated ? (
                 <>
-                  <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-xs font-medium text-cyan-700 dark:text-cyan-300">
+                  <span className="max-w-full truncate rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-xs font-medium text-cyan-700 dark:text-cyan-300 sm:max-w-[14rem]">
                     {user?.email}
                   </span>
                   <button className="secondary-button px-4 py-2" onClick={logout} type="button">
@@ -82,7 +76,7 @@ function AppLayout() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-6 py-10" id="main-content">
+      <main className="mx-auto min-w-0 max-w-7xl px-4 py-6 sm:px-6 sm:py-8" id="main-content">
         <Outlet />
       </main>
     </div>

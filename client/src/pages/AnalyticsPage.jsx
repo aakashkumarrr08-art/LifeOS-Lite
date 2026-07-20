@@ -118,24 +118,22 @@ function AnalyticsPage() {
 
   return (
     <section className="space-y-6">
-      <div className="overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-900 p-8 text-white shadow-soft">
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+      <div className="page-hero">
+        <div className="page-hero-content">
           <div className="max-w-2xl space-y-4">
-            <span className="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-cyan-200">
-              Phase 6 Analytics
-            </span>
-            <h2 className="text-4xl font-semibold tracking-tight">Turn your task and attendance data into clear next steps.</h2>
-            <p className="text-base leading-7 text-slate-200">
+            <span className="page-eyebrow">Analytics</span>
+            <h2 className="page-title">Turn your task and attendance data into clear next steps.</h2>
+            <p className="page-description">
               Your productivity score weighs task completion and overall attendance equally, so every metric has a practical meaning.
             </p>
           </div>
-          <button className="primary-button justify-center border border-white/10 bg-white text-slate-950 hover:bg-slate-100 dark:bg-white dark:text-slate-950" onClick={loadAnalytics} type="button">
+          <button className="primary-button w-full border border-white/10 bg-white text-slate-950 hover:bg-slate-100 sm:w-auto dark:bg-white dark:text-slate-950" onClick={loadAnalytics} type="button">
             Refresh Analytics
           </button>
         </div>
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-4">
+      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
         <AnalyticsCard description={summary.description} score={analyticsData.productivityScore} summary={summary.label} />
         <StatisticsCard accent="cyan" detail={`${analyticsData.pendingTasks} still to complete`} label="Total Tasks" value={analyticsData.totalTasks} />
         <StatisticsCard accent="emerald" detail={`${analyticsData.completionRate}% overall completion`} label="Completed Tasks" value={analyticsData.completedTasks} />
@@ -173,26 +171,26 @@ function AnalyticsPage() {
       </div>
 
       <div className="dashboard-panel">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-          <div>
+        <div className="flex min-w-0 flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+          <div className="min-w-0 flex-1">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">Performance Summary</p>
             <h3 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
               Current level: {summary.label}
             </h3>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">{summary.description}</p>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:w-[420px]">
+          <div className="grid w-full min-w-0 gap-3 sm:grid-cols-2 xl:w-[26rem] xl:shrink-0">
             {productivityLevels.map((level) => (
               <div
-                className={`rounded-2xl border px-4 py-3 text-sm transition ${
+                className={`flex min-h-[6.75rem] min-w-0 flex-col justify-center rounded-2xl border px-4 py-3 text-sm transition ${
                   level.label === summary.label
                     ? 'border-cyan-500/30 bg-cyan-500/10 text-cyan-700 dark:text-cyan-200'
                     : 'border-slate-200 bg-slate-50 text-slate-500 dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-400'
                 }`}
                 key={level.label}
               >
-                <p className="font-semibold">{level.label}</p>
-                <p className="mt-1 text-xs">{level.range} score</p>
+                <p className="font-semibold leading-5">{level.label}</p>
+                <p className="mt-1 text-xs leading-5">{level.range} score</p>
               </div>
             ))}
           </div>

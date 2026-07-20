@@ -11,16 +11,16 @@ function AttendanceCard({ attendance, onDelete, onEdit }) {
   const classesNeeded = attendance.classesNeeded;
 
   return (
-    <article className="rounded-[1.5rem] border border-slate-200/70 bg-white p-5 shadow-soft transition duration-200 hover:-translate-y-0.5 dark:border-slate-800 dark:bg-slate-900">
+    <article className="min-w-0 overflow-hidden rounded-[1.5rem] border border-slate-200/70 bg-white p-4 shadow-soft transition duration-200 hover:-translate-y-0.5 sm:p-5 dark:border-slate-800 dark:bg-slate-900">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <p className="text-lg font-semibold text-slate-950 dark:text-white">{attendance.subject}</p>
+        <div className="min-w-0">
+          <p className="break-words text-lg font-semibold leading-7 text-slate-950 dark:text-white">{attendance.subject}</p>
           <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
             Target: {minimumAttendance}% attendance
           </p>
         </div>
         <span
-          className={`w-fit rounded-full border px-3 py-1 text-sm font-semibold ${
+          className={`w-fit max-w-full shrink-0 rounded-full border px-3 py-1 text-sm font-semibold ${
             isAtRisk
               ? 'border-rose-500/20 bg-rose-500/10 text-rose-600 dark:text-rose-300'
               : 'border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-300'

@@ -14,12 +14,12 @@ function SmartRevisionPlan({ revisionPlan }) {
       <div className="mt-6 space-y-3">
         {revisionPlan.prioritySubjects.map((subject) => (
           <div className="rounded-2xl border border-slate-200/70 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950/60" key={subject.subject}>
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="font-semibold text-slate-950 dark:text-white">{subject.subject}</p>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0">
+                <p className="break-words font-semibold text-slate-950 dark:text-white">{subject.subject}</p>
                 <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">{subject.reason}</p>
               </div>
-              <span className={`shrink-0 rounded-full border px-3 py-1 text-xs font-semibold ${priorityClasses[subject.priority] || priorityClasses.Medium}`}>
+              <span className={`w-fit shrink-0 rounded-full border px-3 py-1 text-xs font-semibold ${priorityClasses[subject.priority] || priorityClasses.Medium}`}>
                 {subject.priority}
               </span>
             </div>

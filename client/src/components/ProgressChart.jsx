@@ -85,8 +85,8 @@ function ProgressChart({ data, description, period, title }) {
       <h3 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">{title}</h3>
       <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{description}</p>
       {data.length > 0 ? (
-        <div className="mt-7 h-72">
-          <canvas aria-label={`${title} chart`} className="h-full w-full" ref={canvasRef} role="img" />
+        <div className="relative mx-auto mt-7 h-72 w-full min-w-0">
+          <canvas aria-label={`${title} chart`} className="block h-full w-full" ref={canvasRef} role="img" />
         </div>
       ) : (
         <div className="mt-7 flex h-72 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 text-center text-sm leading-6 text-slate-500 dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-400">

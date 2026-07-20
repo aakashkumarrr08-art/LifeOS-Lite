@@ -21,8 +21,8 @@ function TodayStudyPlan({ studyPlan }) {
         {studyPlan.sessions.length > 0 ? studyPlan.sessions.map((session, index) => (
           <div className="rounded-2xl border border-slate-200/70 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950/60" key={`${session.subject}-${session.topic}-${index}`}>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-              <div>
-                <p className="font-semibold text-slate-950 dark:text-white">{session.topic}</p>
+              <div className="min-w-0">
+                <p className="break-words font-semibold text-slate-950 dark:text-white">{session.topic}</p>
                 <p className="mt-1 text-sm text-cyan-700 dark:text-cyan-300">{session.subject}</p>
               </div>
               <div className="flex flex-wrap gap-2 text-xs font-semibold">

@@ -4,82 +4,45 @@ import useAuth from '../hooks/useAuth.js';
 
 function DashboardTopNavbar({ onMenuToggle }) {
   const { user } = useAuth();
+  const initials = user?.name
+    ?.split(' ')
+    .map((namePart) => namePart[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/80">
-      <div className="flex flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <button
-              className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 lg:hidden"
-              aria-label="Open dashboard navigation"
-              onClick={onMenuToggle}
-              type="button"
-            >
-              Menu
-            </button>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-cyan-600 dark:text-cyan-400">
-                Student Productivity Dashboard
-              </p>
-              <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
-                Welcome back, {user?.name}
-              </h1>
-            </div>
+    <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/85 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/85">
+      <div className="flex min-h-[4.5rem] min-w-0 items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+        <div className="flex min-w-0 items-center gap-3">
+          <button
+            className="inline-flex min-h-[2.75rem] shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 lg:hidden"
+            aria-label="Open dashboard navigation"
+            onClick={onMenuToggle}
+            type="button"
+          >
+            Menu
+          </button>
+          <div className="min-w-0">
+            <p className="hidden text-xs font-semibold uppercase tracking-[0.24em] text-cyan-600 dark:text-cyan-400 sm:block">
+              LifeOS Lite
+            </p>
+            <h1 className="truncate text-lg font-semibold tracking-tight text-slate-950 sm:text-xl dark:text-white">
+              Welcome back, {user?.name || 'Student'}
+            </h1>
           </div>
-
-          <ThemeToggleButton />
         </div>
 
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="rounded-2xl border border-slate-200/70 bg-slate-50 px-4 py-3 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-300">
-            Your dashboard combines study progress, attendance, tasks, and exam readiness in one view.
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            <NavLink
-              className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
-              to="/dashboard"
-            >
-              Dashboard
-            </NavLink>
-            <NavLink
-              className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
-              to="/tasks"
-            >
-              Tasks
-            </NavLink>
-            <NavLink
-              className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
-              to="/study-planner"
-            >
-              Study Planner
-            </NavLink>
-            <NavLink
-              className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
-              to="/attendance"
-            >
-              Attendance
-            </NavLink>
-            <NavLink
-              className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
-              to="/analytics"
-            >
-              Analytics
-            </NavLink>
-            <NavLink
-              className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
-              to="/ai-assistant"
-            >
-              AI Assistant
-            </NavLink>
-            <NavLink
-              className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
-              to="/profile"
-            >
-              Profile
-            </NavLink>
-          </div>
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <NavLink
+            aria-label="Open your profile"
+            className="hidden h-11 w-11 items-center justify-center rounded-full border border-cyan-500/20 bg-cyan-500/10 text-sm font-semibold text-cyan-700 transition hover:bg-cyan-500/20 dark:text-cyan-200 sm:inline-flex"
+            title="Profile"
+            to="/profile"
+          >
+            {initials || 'LL'}
+          </NavLink>
+          <ThemeToggleButton />
         </div>
       </div>
     </header>

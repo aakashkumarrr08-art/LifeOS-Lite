@@ -6,9 +6,9 @@ function AttendanceAlerts({ alerts }) {
       <div className="mt-6 space-y-3">
         {alerts.length > 0 ? alerts.map((alert) => (
           <div className="rounded-2xl border border-rose-500/20 bg-rose-500/10 p-4" key={alert.subject}>
-            <div className="flex items-center justify-between gap-3">
-              <p className="font-semibold text-rose-800 dark:text-rose-100">{alert.subject}</p>
-              <span className="rounded-full border border-rose-500/20 bg-white/40 px-3 py-1 text-sm font-semibold text-rose-700 dark:bg-slate-950/30 dark:text-rose-200">{alert.percentage}%</span>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <p className="break-words font-semibold text-rose-800 dark:text-rose-100">{alert.subject}</p>
+              <span className="w-fit shrink-0 rounded-full border border-rose-500/20 bg-white/40 px-3 py-1 text-sm font-semibold text-rose-700 dark:bg-slate-950/30 dark:text-rose-200">{alert.percentage}%</span>
             </div>
             <p className="mt-2 text-sm leading-6 text-rose-700 dark:text-rose-200">{alert.message}</p>
           </div>

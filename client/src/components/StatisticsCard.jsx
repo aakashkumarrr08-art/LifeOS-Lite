@@ -7,11 +7,11 @@ const accentClasses = {
 
 function StatisticsCard({ accent = 'cyan', detail, label, value }) {
   return (
-    <article className="dashboard-panel relative overflow-hidden">
+    <article className="metric-card relative">
       <div className={`absolute right-5 top-5 h-10 w-10 rounded-2xl border ${accentClasses[accent] || accentClasses.cyan}`} />
       <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{label}</p>
       <p className="mt-5 text-4xl font-semibold tracking-tight text-slate-950 dark:text-white">{value}</p>
-      <p className="mt-3 max-w-[14rem] text-sm leading-6 text-slate-600 dark:text-slate-300">{detail}</p>
+      <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{detail}</p>
     </article>
   );
 }

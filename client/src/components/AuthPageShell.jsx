@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 
 const highlights = [
-  'JWT-based session handling for protected routes',
-  'Hashed passwords with secure backend validation',
-  'Clean MVC structure that is easy to explain in viva',
+  'One calm workspace for your study routine',
+  'Plan tasks and focused study sessions',
+  'See meaningful progress at a glance',
 ];
 
 function AuthPageShell({
@@ -16,20 +16,20 @@ function AuthPageShell({
   title,
 }) {
   return (
-    <section className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-      <div className="overflow-hidden rounded-[2rem] border border-slate-200/70 bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-900 p-8 text-white shadow-soft dark:border-slate-800">
-        <div className="flex h-full flex-col justify-between gap-10">
+    <section className="grid min-w-0 gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
+      <div className="min-w-0 overflow-hidden rounded-[1.5rem] border border-slate-200/70 bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-900 p-5 text-white shadow-soft sm:p-8 lg:rounded-[2rem] dark:border-slate-800">
+        <div className="flex h-full flex-col justify-between gap-8 lg:gap-10">
           <div className="space-y-6">
             <span className="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-cyan-200">
               {badge}
             </span>
             <div className="space-y-4">
-              <h2 className="max-w-xl text-4xl font-semibold tracking-tight">{title}</h2>
-              <p className="max-w-xl text-base leading-7 text-slate-300">{description}</p>
+              <h2 className="max-w-xl text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">{title}</h2>
+              <p className="max-w-xl text-sm leading-6 text-slate-300 sm:text-base sm:leading-7">{description}</p>
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
             {highlights.map((item) => (
               <div
                 key={item}
@@ -42,7 +42,7 @@ function AuthPageShell({
         </div>
       </div>
 
-      <div className="auth-card mx-auto flex w-full max-w-xl flex-col justify-center">
+      <div className="auth-card mx-auto flex w-full min-w-0 max-w-xl flex-col justify-center">
         {children}
 
         <p className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
@@ -57,4 +57,3 @@ function AuthPageShell({
 }
 
 export default AuthPageShell;
-

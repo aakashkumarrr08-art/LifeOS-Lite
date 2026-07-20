@@ -141,28 +141,28 @@ function DashboardPage() {
   return (
     <section className="space-y-6">
       <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-        <div className="overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-900 p-8 text-white shadow-soft">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
+        <div className="page-hero">
+          <div className="page-hero-content xl:items-center">
             <div className="max-w-2xl space-y-5">
-              <span className="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.32em] text-cyan-200">
+              <span className="page-eyebrow">
                 Live Task Insights
               </span>
               <div className="space-y-4">
-                <h2 className="text-4xl font-semibold tracking-tight">
+                <h2 className="page-title">
                   A focused command center for student productivity.
                 </h2>
-                <p className="max-w-xl text-base leading-7 text-slate-200">
+                <p className="page-description max-w-xl">
                   Track your study rhythm, attendance performance, and exam readiness with a single modern dashboard.
                 </p>
               </div>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-              <button className="primary-button justify-center border border-white/10 bg-white text-slate-950 hover:bg-slate-100 dark:bg-white dark:text-slate-950" onClick={loadDashboard} type="button">
+            <div className="page-actions">
+              <button className="primary-button w-full border border-white/10 bg-white text-slate-950 hover:bg-slate-100 dark:bg-white dark:text-slate-950" onClick={loadDashboard} type="button">
                 Refresh Data
               </button>
               <Link
-                className="secondary-button justify-center border-white/15 bg-white/10 text-white hover:bg-white/15"
+                className="secondary-button w-full border-white/15 bg-white/10 text-white hover:bg-white/15"
                 to="/profile"
               >
                 Open Profile
@@ -173,16 +173,16 @@ function DashboardPage() {
 
         <div className="dashboard-panel">
           <div className="flex items-start justify-between gap-4">
-            <div>
+            <div className="min-w-0">
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">
-                User Profile Card
+                Profile
               </p>
-              <h3 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
+              <h3 className="mt-3 break-words text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
                 {user?.name}
               </h3>
-              <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{user?.email}</p>
+              <p className="mt-2 break-words text-sm leading-6 text-slate-600 dark:text-slate-300">{user?.email}</p>
             </div>
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/10 text-lg font-semibold text-cyan-700 dark:text-cyan-300">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-cyan-500/10 text-base font-semibold text-cyan-700 sm:h-14 sm:w-14 sm:text-lg dark:text-cyan-300">
               {user?.name
                 ?.split(' ')
                 .map((namePart) => namePart[0])
@@ -252,7 +252,7 @@ function DashboardPage() {
 
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <div className="dashboard-panel">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">Today&apos;s Study Sessions</p>
               <h3 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">Your focused study blocks</h3>
@@ -261,12 +261,12 @@ function DashboardPage() {
           </div>
           <div className="mt-6 space-y-3">
             {studyPlanner.todaySessions.length > 0 ? studyPlanner.todaySessions.map((session) => (
-              <div className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200/70 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950/60" key={session.id}>
+              <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/70 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800 dark:bg-slate-950/60" key={session.id}>
                 <div className="min-w-0">
                   <p className="truncate font-semibold text-slate-950 dark:text-white">{session.topic}</p>
                   <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{session.subject} · {session.startTime} - {session.endTime}</p>
                 </div>
-                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${session.status === 'Completed' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-300' : 'bg-cyan-500/10 text-cyan-700 dark:text-cyan-300'}`}>
+                <span className={`w-fit rounded-full px-3 py-1 text-xs font-semibold ${session.status === 'Completed' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-300' : 'bg-cyan-500/10 text-cyan-700 dark:text-cyan-300'}`}>
                   {session.status}
                 </span>
               </div>
@@ -339,7 +339,7 @@ function DashboardPage() {
 
       <div className="grid gap-6 2xl:grid-cols-[1.2fr_0.8fr]">
         <div className="dashboard-panel">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">
                 Weekly Study Chart
@@ -361,7 +361,7 @@ function DashboardPage() {
         <div className="space-y-6">
           <div className="dashboard-panel">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">
-              Study Progress Card
+              Study Progress
             </p>
             <h3 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
               {studyProgress.completedPercentage}% weekly study goal
@@ -405,8 +405,8 @@ function DashboardPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">
               Productivity Score
             </p>
-            <div className="mt-6 flex items-center gap-5">
-              <div className="flex h-24 w-24 items-center justify-center rounded-full border-[10px] border-cyan-500/20 bg-cyan-500/10 text-3xl font-semibold text-cyan-700 dark:text-cyan-300">
+            <div className="mt-6 flex flex-col gap-5 sm:flex-row sm:items-center">
+              <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full border-8 border-cyan-500/20 bg-cyan-500/10 text-2xl font-semibold text-cyan-700 sm:h-24 sm:w-24 sm:border-[10px] sm:text-3xl dark:text-cyan-300">
                 {productivityScore.score}
               </div>
               <div>
@@ -424,10 +424,10 @@ function DashboardPage() {
 
       <div className="grid gap-6 xl:grid-cols-[1fr_1fr_0.9fr]">
         <div className="dashboard-panel">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">
-                Today&apos;s Tasks Card
+              Today&apos;s Tasks
               </p>
               <h3 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
                 Tasks due today
@@ -476,7 +476,7 @@ function DashboardPage() {
         <div className="space-y-6">
           <div className="dashboard-panel">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">
-              Attendance Card
+              Attendance
             </p>
             <h3 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
               {attendance.hasRecords ? `${attendance.percentage}% semester attendance` : 'Start tracking attendance'}
@@ -521,7 +521,7 @@ function DashboardPage() {
 
           <div className="dashboard-panel">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">
-              Upcoming Exam Countdown Card
+              Upcoming Exam
             </p>
             {upcomingExam.configured ? (
               <>
@@ -553,7 +553,7 @@ function DashboardPage() {
         <div className="space-y-6">
           <div className="dashboard-panel">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">
-              Quick Actions Card
+              Quick Actions
             </p>
             <div className="mt-6 space-y-3">
               <button className="primary-button w-full justify-center" onClick={loadDashboard} type="button">

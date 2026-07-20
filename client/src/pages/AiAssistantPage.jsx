@@ -113,14 +113,14 @@ function AiAssistantPage() {
 
   return (
     <section className="space-y-6">
-      <div className="overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-900 p-8 text-white shadow-soft">
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+      <div className="page-hero">
+        <div className="page-hero-content">
           <div className="max-w-2xl space-y-4">
-            <span className="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-cyan-200">Phase 8 AI Study Assistant</span>
-            <h2 className="text-4xl font-semibold tracking-tight">A practical study coach built from your own academic data.</h2>
-            <p className="text-base leading-7 text-slate-200">This assistant uses a transparent, rule-based engine. It combines your tasks, attendance, study sessions, and productivity metrics without calling any external AI service.</p>
+            <span className="page-eyebrow">AI assistant</span>
+            <h2 className="page-title">A practical study coach built from your own academic data.</h2>
+            <p className="page-description">Review tailored recommendations from your study activity, then use Ask Anything AI when you need a quick explanation or fresh perspective.</p>
           </div>
-          <button className="primary-button justify-center border border-white/10 bg-white text-slate-950 hover:bg-slate-100 dark:bg-white dark:text-slate-950" onClick={loadAssistant} type="button">Refresh AI</button>
+          <button className="primary-button w-full border border-white/10 bg-white text-slate-950 hover:bg-slate-100 sm:w-auto dark:bg-white dark:text-slate-950" onClick={loadAssistant} type="button">Refresh AI</button>
         </div>
       </div>
 

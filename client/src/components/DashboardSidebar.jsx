@@ -40,7 +40,7 @@ function DashboardSidebar({ isOpen, onClose }) {
       />
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-[290px] flex-col border-r border-slate-200/70 bg-white/90 px-5 py-6 shadow-2xl backdrop-blur-xl transition duration-300 dark:border-slate-800 dark:bg-slate-950/95 lg:static lg:z-auto lg:w-[280px] lg:translate-x-0 lg:shadow-none ${
+        className={`fixed inset-y-0 left-0 z-50 flex min-w-0 w-[min(18.5rem,calc(100vw-1rem))] flex-col overflow-y-auto border-r border-slate-200/70 bg-white/90 px-4 py-5 shadow-2xl backdrop-blur-xl transition duration-300 dark:border-slate-800 dark:bg-slate-950/95 sm:px-5 lg:static lg:z-auto lg:w-[280px] lg:translate-x-0 lg:shadow-none ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -49,7 +49,7 @@ function DashboardSidebar({ isOpen, onClose }) {
             <p className="text-xs font-semibold uppercase tracking-[0.35em] text-cyan-600 dark:text-cyan-400">
               LifeOS Lite
             </p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
+            <h2 className="mt-1 text-xl font-semibold tracking-tight text-slate-950 dark:text-white">
               Dashboard
             </h2>
           </div>
@@ -62,31 +62,31 @@ function DashboardSidebar({ isOpen, onClose }) {
           </button>
         </div>
 
-        <div className="mt-8 rounded-[1.75rem] bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-900 p-5 text-white">
+        <div className="mt-6 overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-900 p-4 text-white">
           <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-lg font-semibold text-white">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-base font-semibold text-white">
               {initials || 'LL'}
             </div>
-            <div>
-              <p className="text-lg font-semibold">{user?.name}</p>
-              <p className="text-sm text-cyan-100/90">{user?.email}</p>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-base font-semibold" title={user?.name}>{user?.name || 'LifeOS Student'}</p>
+              <p className="mt-1 truncate text-xs leading-5 text-cyan-100/90" title={user?.email}>{user?.email || 'student@lifeos.app'}</p>
             </div>
           </div>
-          <div className="mt-5 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm text-slate-100">
+          <div className="mt-4 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm leading-6 text-slate-100">
             Keep your tasks, attendance, study plan, and analytics in one focused workspace.
           </div>
         </div>
 
-        <nav aria-label="Dashboard navigation" className="mt-8 space-y-2">
+        <nav aria-label="Dashboard navigation" className="mt-6 space-y-2">
           {navigationItems.map((item) => (
             <NavLink key={item.to} className={navigationLinkClass} onClick={onClose} to={item.to}>
-              <p className="text-sm font-semibold">{item.label}</p>
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{item.description}</p>
+              <p className="text-sm font-semibold leading-5">{item.label}</p>
+              <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">{item.description}</p>
             </NavLink>
           ))}
         </nav>
 
-        <div className="mt-8 rounded-[1.5rem] border border-slate-200/70 bg-slate-50 p-5 dark:border-slate-800 dark:bg-slate-900/70">
+        <div className="mt-6 rounded-[1.5rem] border border-slate-200/70 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900/70">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">
             Available Modules
           </p>
@@ -103,7 +103,7 @@ function DashboardSidebar({ isOpen, onClose }) {
         </div>
 
         <button
-          className="secondary-button mt-auto w-full justify-center"
+          className="secondary-button mt-6 w-full justify-center lg:mt-auto"
           onClick={logout}
           type="button"
         >

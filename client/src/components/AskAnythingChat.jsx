@@ -236,25 +236,27 @@ function AskAnythingChat() {
         </button>
       </div>
 
-      <div className="mt-6 min-h-[280px] space-y-4 rounded-[1.5rem] bg-slate-100/70 p-4 dark:bg-slate-950/50 sm:p-5">
-        {messages.length === 0 ? (
-          <div className="flex min-h-[240px] flex-col items-center justify-center px-4 text-center">
-            <span className="rounded-2xl bg-cyan-500/10 px-3 py-2 text-sm font-bold text-cyan-700 dark:text-cyan-300">AI</span>
-            <h4 className="mt-4 text-lg font-semibold text-slate-950 dark:text-white">Start a thoughtful conversation</h4>
-            <p className="mt-2 max-w-md text-sm leading-6 text-slate-600 dark:text-slate-300">Try “Explain recursion with a JavaScript example” or “Help me plan a focused revision session.”</p>
-          </div>
-        ) : (
-          messages.map((message) => (
-            <AiChatMessage key={message.id} message={message} showTyping={message.isAnimating && !message.content} />
-          ))
-        )}
-        {isSending && !isTyping ? (
-          <div aria-live="polite" className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-cyan-500" />
-            Contacting Gemini...
-          </div>
-        ) : null}
-        <div ref={bottomRef} />
+      <div className="mt-6 min-h-[280px] rounded-[1.5rem] bg-slate-100/70 p-3 dark:bg-slate-950/50 sm:p-5">
+        <div className="mx-auto w-full max-w-5xl space-y-4">
+          {messages.length === 0 ? (
+            <div className="flex min-h-[240px] flex-col items-center justify-center px-4 text-center">
+              <span className="rounded-2xl bg-cyan-500/10 px-3 py-2 text-sm font-bold text-cyan-700 dark:text-cyan-300">AI</span>
+              <h4 className="mt-4 text-lg font-semibold text-slate-950 dark:text-white">Start a thoughtful conversation</h4>
+              <p className="mt-2 max-w-md text-sm leading-6 text-slate-600 dark:text-slate-300">Try “Explain recursion with a JavaScript example” or “Help me plan a focused revision session.”</p>
+            </div>
+          ) : (
+            messages.map((message) => (
+              <AiChatMessage key={message.id} message={message} showTyping={message.isAnimating && !message.content} />
+            ))
+          )}
+          {isSending && !isTyping ? (
+            <div aria-live="polite" className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-cyan-500" />
+              Contacting Gemini...
+            </div>
+          ) : null}
+          <div ref={bottomRef} />
+        </div>
       </div>
 
       {errorMessage ? (

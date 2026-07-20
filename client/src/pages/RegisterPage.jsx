@@ -108,7 +108,7 @@ function RegisterPage() {
   return (
     <AuthPageShell
       badge="New Account"
-      description="Create a secure account to test the complete authentication flow for the semester project."
+      description="Create your account and start organizing your study routine in one focused workspace."
       footerLabel="Already registered?"
       footerLinkText="Sign in instead"
       footerTo="/login"
@@ -120,7 +120,7 @@ function RegisterPage() {
             Register
           </h1>
           <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
-            Set up your student account with validation on both frontend and backend.
+            Set up your student account to begin planning your next steps.
           </p>
         </div>
 

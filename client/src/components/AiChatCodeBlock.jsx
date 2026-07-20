@@ -24,13 +24,13 @@ function AiChatCodeBlock({ code, language }) {
   };
 
   return (
-    <div className="my-4 overflow-hidden rounded-2xl border border-slate-700 bg-slate-950 shadow-inner">
-      <div className="flex items-center justify-between border-b border-slate-800 px-4 py-2.5">
-        <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+    <div className="my-4 min-w-0 max-w-full overflow-hidden rounded-2xl border border-slate-700 bg-slate-950 shadow-inner">
+      <div className="flex min-w-0 items-center justify-between gap-3 border-b border-slate-800 px-4 py-2.5">
+        <span className="truncate text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
           {language || 'text'}
         </span>
         <button
-          className="rounded-lg px-2 py-1 text-xs font-semibold text-slate-300 transition hover:bg-slate-800 hover:text-white"
+          className="shrink-0 rounded-lg px-2 py-1 text-xs font-semibold text-slate-300 transition hover:bg-slate-800 hover:text-white"
           onClick={copyCode}
           type="button"
         >
@@ -38,9 +38,10 @@ function AiChatCodeBlock({ code, language }) {
         </button>
       </div>
       <SyntaxHighlighter
-        customStyle={{ background: 'transparent', margin: 0, padding: '1rem' }}
+        customStyle={{ background: 'transparent', margin: 0, maxWidth: '100%', overflowX: 'auto', padding: '1rem' }}
         language={language || 'text'}
         style={oneDark}
+        wrapLongLines
       >
         {code}
       </SyntaxHighlighter>

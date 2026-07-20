@@ -6,13 +6,13 @@ function StudySubjectCard({ sessions, subject }) {
   const completedMinutes = completedSessions.reduce((total, session) => total + session.duration, 0);
 
   return (
-    <article className="rounded-[1.5rem] border border-slate-200/70 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+    <article className="min-w-0 overflow-hidden rounded-[1.5rem] border border-slate-200/70 bg-white p-4 shadow-soft sm:p-5 dark:border-slate-800 dark:bg-slate-900">
       <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-lg font-semibold text-slate-950 dark:text-white">{subject}</p>
+        <div className="min-w-0">
+          <p className="break-words text-lg font-semibold leading-7 text-slate-950 dark:text-white">{subject}</p>
           <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{sessions.length} planned sessions</p>
         </div>
-        <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-sm font-semibold text-cyan-700 dark:text-cyan-300">
+        <span className="shrink-0 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-sm font-semibold text-cyan-700 dark:text-cyan-300">
           {formatDuration(plannedMinutes)}
         </span>
       </div>

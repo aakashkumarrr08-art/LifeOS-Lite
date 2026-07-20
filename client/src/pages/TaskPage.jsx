@@ -169,18 +169,16 @@ function TaskPage() {
 
   return (
     <section className="space-y-6">
-      <div className="overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-900 p-8 text-white shadow-soft">
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+      <div className="page-hero">
+        <div className="page-hero-content">
           <div className="max-w-2xl space-y-4">
-            <span className="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-cyan-200">
-              Phase 4 Task Manager
-            </span>
-            <h2 className="text-4xl font-semibold tracking-tight">Plan your work with clear priorities and deadlines.</h2>
-            <p className="text-base leading-7 text-slate-200">
+            <span className="page-eyebrow">Task manager</span>
+            <h2 className="page-title">Plan your work with clear priorities and deadlines.</h2>
+            <p className="page-description">
               Create, update, complete, and filter personal study tasks. Every task is stored securely in MongoDB and belongs only to your account.
             </p>
           </div>
-          <button className="primary-button justify-center border border-white/10 bg-white text-slate-950 hover:bg-slate-100 dark:bg-white dark:text-slate-950" onClick={openCreateModal} type="button">
+          <button className="primary-button w-full border border-white/10 bg-white text-slate-950 hover:bg-slate-100 sm:w-auto dark:bg-white dark:text-slate-950" onClick={openCreateModal} type="button">
             Create Task
           </button>
         </div>

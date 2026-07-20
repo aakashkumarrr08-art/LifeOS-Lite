@@ -429,6 +429,9 @@ function DashboardPage() {
               <Link className="secondary-button w-full justify-center" to="/attendance">
                 Open Attendance
               </Link>
+              <Link className="secondary-button w-full justify-center" to="/analytics">
+                Open Analytics
+              </Link>
               <button className="secondary-button w-full justify-center" onClick={handleLogout} type="button">
                 Logout
               </button>

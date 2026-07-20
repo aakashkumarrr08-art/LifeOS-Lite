@@ -5,10 +5,11 @@ const navigationItems = [
   { label: 'Dashboard', description: 'Overview and insights', to: '/dashboard' },
   { label: 'Task Manager', description: 'Plan and complete tasks', to: '/tasks' },
   { label: 'Attendance', description: 'Track subject eligibility', to: '/attendance' },
+  { label: 'Analytics', description: 'Review progress and trends', to: '/analytics' },
   { label: 'Profile', description: 'Student account details', to: '/profile' },
 ];
 
-const upcomingItems = ['Study Planner', 'Analytics'];
+const upcomingItems = ['Study Planner'];
 
 function DashboardSidebar({ isOpen, onClose }) {
   const { logout, user } = useAuth();
